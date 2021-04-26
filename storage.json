@@ -1,0 +1,81 @@
+{
+  "class":{
+    "senior":{
+
+      "高三忠":{
+        "goodPoint": 0 ,
+        "badPoint": 0,
+        "banned": false
+      },
+      "高二忠":{
+        "goodPoint": 0 ,
+        "badPoint": 0,
+        "banned": false
+      },
+      "高二孝":{
+        "goodPoint": 0 ,
+        "badPoint": 0,
+        "banned": false
+      },
+      "高一忠":{
+        "goodPoint": 0 ,
+        "badPoint": 0,
+        "banned": false
+      },
+      "高一孝":{
+        "goodPoint": 0 ,
+        "badPoint": 0,
+        "banned": false
+      }
+    },
+    "junior":{
+
+      "國三忠":{
+        "goodPoint": 0 ,
+        "badPoint": 0,
+        "banned": false
+      },
+      "國二忠":{
+        "goodPoint": 0 ,
+        "badPoint": 0,
+        "banned": false
+      },
+      "國二孝":{
+        "goodPoint": 0 ,
+        "badPoint": 0,
+        "banned": false
+      },
+      "國一忠":{
+        "goodPoint": 0 ,
+        "badPoint": 0,
+        "banned": false
+      },
+      "國一孝":{
+        "goodPoint": 0 ,
+        "badPoint": 0,
+        "banned": false
+      }
+    }
+
+  },
+  "ball":{
+    "排球":{
+      "court":3,
+      "ball":20,
+      "racket":0,
+      "dam":0
+    },
+    "桌球":{
+      "court":6,
+      "ball":20,
+      "racket":30,
+      "dam":0
+    },
+    "羽球":{
+      "court":6,
+      "ball":30,
+      "racket":30,
+      "dam":0
+    }
+  }
+}

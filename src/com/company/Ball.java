@@ -11,6 +11,14 @@ public class Ball {
         ballName = name;
     }
 
+    Ball(String name, int court, int ball, int bat) {
+        ballName = name;
+        courtNum = court;
+        ballNum = ball;
+        batNum = bat;
+        ballDamaged = 0;
+    }
+
     Ball(String name, int court, int ball, int bat, int dam) {
         ballName = name;
         courtNum = court;
@@ -26,22 +34,18 @@ public class Ball {
     public void subCourt(int num) {}
     public void addCourt(int num) {}
 
+//    public  void setBallName( String str) {  }
+
     public String getName() {
         return ballName;
     }
-
     public int getBallNum() {
         return ballNum;
     }
-
-    public int getCourtNum() {
-        return courtNum;
-    }
-
+    public int getCourtNum() { return courtNum; }
     public int getBatNum() {
         return batNum;
     }
-
     public int getBallDamaged() {
         return ballDamaged;
     }

@@ -3,35 +3,31 @@ package com.company;
 import com.google.gson.Gson;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.Stack;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.*;
+import java.util.*;
 
-public class Main extends JFrame {
+public class Main extends Frame {
     static int x=20;
     static int y=10;
     static int width=1500;
     static int height=800;
 
-    Gson gson = new Gson();
-
-    //    Calendar calendar = Calendar.getInstance();
-    File f = new File("storage.json");
-    RandomAccessFile d;
+    File f = new File("storage.txt");
 
     Stack<String> previous = new Stack<>();
     Stack<String> next = new Stack<>();
 
-    School school = new School();
+    School school;
     CardLayout card = new CardLayout();
-    String current;
+    String current = "weekend";
 
-    //ä½ç½®æ ·æ¿
+    //¦ì¸m¼ËªO
     JPanel pnlMenu = new JPanel();
     JPanel pnlNorth = new JPanel();
     JPanel pnlNW = new JPanel();
@@ -54,79 +50,102 @@ public class Main extends JFrame {
     //    JPanel pnlJun22 = new JPanel();
     //    JPanel pnlJun11 = new JPanel();
     //    JPanel pnlJun12 = new JPanel();
-    //å†…å®¹æ ·æ¿
-    JPanel pnlInti = new JPanel();//åˆå§‹è®¾å®šï¼ˆç¬¬ä¸€æ¬¡ä½¿ç”¨ï¼‰
+    //¤º®e¼ËªO
+    JPanel pnlInti = new JPanel();//ªì©l³]©w¡]²Ä¤@¦¸¨Ï¥Î¡^
     JPanel pnlSenior = new JPanel();
     JPanel pnlJunior = new JPanel();
     JPanel pnlSetting = new JPanel();
     JPanel pnlClass = new JPanel();
     JPanel pnlHistory = new JPanel();
     JPanel pnlTimeTable = new JPanel();
+    JPanel pnl[][];
+    JPanel pnlSetClass;
+    JPanel pnlSetBall;
+
 
     //
     JLabel lblTitle = new JLabel();
-    JLabel lblSearch = new JLabel("æŸ¥çœ‹: ");
+    JLabel lblSearch = new JLabel("¬d¬İ: ");
     JLabel lblTime = new JLabel();
-    JLabel lblSenior = new JLabel("é«˜ä¸­");
-    JLabel lblJunior = new JLabel("åœ‹ä¸­");
+    JLabel lblSenior = new JLabel("°ª¤¤");
+    JLabel lblJunior = new JLabel("°ê¤¤");
+    JPanel lbl[][];
 
-    JButton btnHome = new JButton("ä¸»é é¢");
-    JButton btnHistory = new JButton("æ­·å²ç´€éŒ„");
-    JButton btnClass = new JButton("ç­çº§");
-    JButton btnScore = new JButton("é»æ•¸");
-    JButton btnTimeTable = new JButton("æ™‚é–“è¡¨");
-    JButton btnSetting = new JButton("è¨­å®š");
-    JButton btnOK = new JButton("ç¢ºå®š");
-    JButton btnBack = new JButton("è¿”å›");
-    JButton btnNext =new JButton("ä¸‹ä¸€é ");
+    JButton btnHome = new JButton("¥D­¶­±");
+    JButton btnHistory = new JButton("¾ú¥v¬ö¿ı");
+    JButton btnClass = new JButton("¯Z¯Å");
+    JButton btnScore = new JButton("ÂI¼Æ");
+    JButton btnTimeTable = new JButton("®É¶¡ªí");
+    JButton btnSetting = new JButton("³]©w");
+    JButton btnOK = new JButton("½T©w");
+    JButton btnBack = new JButton("ªğ¦^");
+    JButton btnNext =new JButton("¤U¤@­¶");
+    JButton[] btnRemoveClass;
+    JButton[] btnRemoveBall;
 
-    String [] ballName={"ç­çº§","æ’çƒ","æ¡Œçƒ","ç¾½çƒ"};
+    JTextField[] classField;
+    JTextField[] gPointField;
+    JTextField[] bPointField;
+    JTextField[] banField;
 
-    String [][] juniorData={
-            {"åœ‹ä¸‰å¿ ","1","2","3"},
-            {"åœ‹ä¸‰å­","1","2","3"},
-            {"åœ‹äºŒå¿ ","1","2","3"},
-            {"åœ‹äºŒå­","1","2","3"},
-            {"åœ‹ä¸€å¿ ","1","2","3"},
-            {"åœ‹ä¸€å­","1","2","3"}
-    };
+    JTextField[] ballNameField;
+    JTextField[] courtField;
+    JTextField[] ballField;
+    JTextField[] batField;
+    JTextField[] damagedField;
 
-    String [][] seniorData={
-            {"é«˜ä¸‰å¿ ","1","2","3"},
-            {"é«˜ä¸‰å­","1","2","3"},
-            {"é«˜äºŒå¿ ","1","2","3"},
-            {"é«˜äºŒå­","1","2","3"},
-            {"é«˜ä¸€å¿ ","1","2","3"},
-            {"é«˜ä¸€å­","1","2","3"},
-    };
+    String [] ballName;
+
+//    String [][] juniorData={
+//            {"°ê¤T©¾","1","2","3"},
+//            {"°ê¤T§µ","1","2","3"},
+//            {"°ê¤G©¾","1","2","3"},
+//            {"°ê¤G§µ","1","2","3"},
+//            {"°ê¤@©¾","1","2","3"},
+//            {"°ê¤@§µ","1","2","3"}
+//    };
+//
+//    String [][] seniorData={
+//            {"°ª¤T©¾","1","2","3"},
+//            {"°ª¤T§µ","1","2","3"},
+//            {"°ª¤G©¾","1","2","3"},
+//            {"°ª¤G§µ","1","2","3"},
+//            {"°ª¤@©¾","1","2","3"},
+//            {"°ª¤@§µ","1","2","3"},
+//    };
 
 
     JPanel pnlWeekend=new JPanel();
     JPanel pnlWeekendResult = new JPanel();
     //    JPanel pnlSenior=new JPanel();
 //    JPanel pnlJunior=new JPanel();
-    JPanel[][] pnlSeniorOrder= new JPanel[5][3];
-    JPanel[][] PnlJuniorOrder=new JPanel[5][3];
+//    JPanel[][] pnlSeniorOrder= new JPanel[5][3];
+//    JPanel[][] PnlJuniorOrder=new JPanel[5][3];
 
-    JTable tabSenior=new JTable(seniorData, ballName);
-    JScrollPane scrollPane1 = new JScrollPane(tabSenior);
+    JTable tabSenior;
+    JScrollPane scrollPane1;
 
-    JTable tabJunior=new JTable(juniorData, ballName);
-    JScrollPane scrollPane2 = new JScrollPane(tabJunior);
+    JTable tabJunior;
+    JScrollPane scrollPane2;
 
+    JTable table;
 
     Main() throws FileNotFoundException {
+        //«Ø¥ß¨t²Î
+        try {
+            init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        School school = new School();
-
-        //è§†çª—
+        //µøµ¡
         this.setSize(width,height);
         this.setLocation(x,y);
-        this.setTitle("å­¸å‹™è™•å€Ÿçƒç™»è®°ã€€è¶…OP Fy(By) å…©æœ¬æ›¸&ä¸€åªç¾Š");
+        this.setTitle("¾Ç°È³B­É²yµn?¡@¶WOP Fy(By) ¨â¥»®Ñ&¤@¥u¦Ï");
         BorderLayout thisLayout = new BorderLayout(50,60);
         this.setLayout(thisLayout);
 
-        //ä¸»æ ·æ¿
+        //¥D¼ËªO
         this.add(pnlMenu,BorderLayout.CENTER);
         pnlMenu.setSize(600,1000);
 //        GridLayout layMenu = new GridLayout(5,10);
@@ -135,7 +154,7 @@ public class Main extends JFrame {
 //        pnlMenu.setSize(1400,800);
 //        pnlMenu.setBackground(Color.YELLOW);
 
-        //ä¸ŠåŠ
+        //¤W¥b
         pnlMenu.add(pnlNorth,BorderLayout.NORTH);
         pnlNorth.setAlignmentY(40);
         pnlNorth.setLayout(new GridLayout());
@@ -144,19 +163,19 @@ public class Main extends JFrame {
         pnlNW.setLayout(new FlowLayout());
         pnlNW.add(lblTitle);
         lblTitle.setBackground(Color.GREEN);
-        lblTitle.setFont(new Font("æ–°ç»†æ˜é«”",Font.BOLD,50));
-//        lblTitle.setText("å„ç­çƒåœºåˆ†é…");//å¯ä»¥æ¢
+        lblTitle.setFont(new Font("·s?©úÅé",Font.BOLD,50));
+//        lblTitle.setText("¦U¯Z²y?¤À°t");//¥i¥H?
         pnlNorth.add(pnlNE);
         pnlNE.setLayout(new GridLayout(2,1));
         pnlNE.add(pnlNE1);
         pnlNE1.setLayout(new GridLayout());
 
-        //æ—¶é—´
-        lblTime.setText("æ°‘åœ‹"+school.getYear()+"å¹´"+school.getMonth()+"æœˆ"+school.getDate()+"æ—¥ æ˜ŸæœŸ"+school.getDay());
+        //¤é´Á
+        lblTime.setText("¥Á°ê"+school.getYear()+"¦~"+school.getMonth()+"¤ë"+school.getDate()+"¤é ¬P´Á"+school.getDay());
         pnlDate.add(lblTime);
         pnlNE1.add(pnlDate);
 
-        //åŠŸèƒ½è¡¨
+        //¥\¯àªí
         pnlFunction.setLayout(new FlowLayout());
         pnlFunction.add(btnHome);
         pnlFunction.add(lblSearch);
@@ -166,139 +185,79 @@ public class Main extends JFrame {
         pnlFunction.add(btnTimeTable);
         pnlNE.add(pnlFunction);
 
-        //å†…å®¹
+        //¤º®e
+        
         pnlMenu.add(pnlCenter,BorderLayout.CENTER);
 //        pnlCenter.setLayout(new GridLayout());
         pnlCenter.setLayout(card);
-//        pnlCenter.add(pnlSenior);
-//        pnlSenior.setLayout(new GridLayout());
-//        pnlSenior.add(lblSenior);
-//        pnlSenior.add(pnlSen31);
-//        pnlSenior.add(pnlSen21);
-//        pnlSenior.add(pnlSen22);
-//        pnlSenior.add(pnlSen11);
-//        pnlSenior.add(pnlSen12);
-//        pnlCenter.add(pnlJunior);
-//        pnlJunior.setLayout(new GridLayout());
-//        pnlJunior.add(lblJunior);
-//        pnlJunior.add(pnlJun31);
-//        pnlJunior.add(pnlJun21);
-//        pnlJunior.add(pnlJun22);
-//        pnlJunior.add(pnlJun11);
-//        pnlJunior.add(pnlJun12);
 
-        //è¨­å®šä»‹é¢
-        pnlCenter.add(pnlSetting,"setting");
-        pnlSetting.setLayout(new GridLayout(1,5));
-        JLabel setText=new JLabel("è®Šæ›´");
-        JLabel setting=new JLabel("æ›´æ”¹ç­ç´šæ•¸ç‚º:");
-        String[] schoolList={"é«˜ä¸­","åœ‹ä¸­"};
-        String[] gradeList={"ä¸€å¹´ç´š","äºŒå¹´ç´š","ä¸‰å¹´ç´š"};
-        String[] numList={"1","2","3","4"};
-        JList setList1=new JList(schoolList);
-        JList setList2=new JList(gradeList);
-        JList setList3=new JList(numList);
-        pnlSetting.add(setText);
-        pnlSetting.add(setList1);
-        pnlSetting.add(setList2);
-        pnlSetting.add(setting);
-        pnlSetting.add(setList3);
-
-
+        //¯Z¯Å¤¶­±
         pnlCenter.add(pnlClass,"class");
         pnlClass.add(new LabelNotDone());
 
+        //¾ú¥v¬ö¿ı¤¶­±
         pnlCenter.add(pnlHistory,"history");
         pnlHistory.add(new LabelNotDone());
 
-        pnlCenter.add(pnlScore,"score");
-        pnlScore.add(new LabelNotDone());
+        //ÂI¼Æ¤¶­±
 
+        //³]©w¤¶­±
+        resetSetting();
+
+        //®É¶¡ªí¬É­±
         pnlCenter.add(pnlTimeTable,"timeTable");
         pnlTimeTable.add(new LabelNotDone());
 
-        pnlCenter.add(pnlInti,"Init");
-        pnlInti.add(new LabelNotDone());
+        //ªì©l¬É­± (¤w¦}¤J?©w¬É­±)
+//        pnlCenter.add(pnlInti,"Init");
+//        pnlInti.add(new LabelNotDone());
 
 //        pnlCenter.add(lblNotDone,"repaired");
 
-        //å‘¨æœ«å€Ÿçƒå¡«å†™é¡ºåº
+        //©P¥½­É²y¶ñ¼g¶¶§Ç¤¶­±
         pnlCenter.add(pnlWeekend,"weekend");
         pnlWeekend.setLayout(new GridLayout(2,1));
         pnlWeekend.add(pnlSenior);
         pnlWeekend.add(pnlJunior);
+
+        ballName = new String[school.getBallKinds()+1];
+        ballName[0] = "¯Z¯Å";
+        for (int i=0; i< school.getBallKinds(); i++)
+            ballName[i+1] = school.getBall(i).getName();
+
+        String[][] sSenior = new String[school.getSenior().length][school.getBallKinds()+1];
+        for (int i=0; i<school.getSenior().length; i++) {
+            sSenior[i][0] = school.getSenior()[i].getName();
+            for (int j=1; j<=school.getBallKinds(); j++)
+                sSenior[i][j] = String.valueOf(j);
+        }
+        tabSenior = new JTable( sSenior, ballName);
+        scrollPane1 = new JScrollPane(tabSenior);
+        pnlSenior.add(scrollPane1);
+
+        String[][] sJunior = new String[school.getJunior().length][4];
+        for (int i=0; i<school.getJunior().length; i++) {
+            sJunior[i][0] = school.getJunior()[i].getName();
+            for (int j=1; j<=3; j++)
+                sJunior[i][j] = String.valueOf(j);
+        }
+        tabJunior = new JTable( sJunior, ballName);
+        scrollPane2 = new JScrollPane(tabJunior);
+        pnlJunior.add(scrollPane2);
+
         pnlSenior.setLayout(new GridLayout());
         tabSenior.getTableHeader().setReorderingAllowed(false);
         tabSenior.setUpdateSelectionOnSort(false);
-        pnlSenior.add(scrollPane1);
         pnlJunior.setLayout(new GridLayout());
 //        tabJunior.setUpdateSelectionOnSort(false);
 //        tabJunior.getTableHeader().setReorderingAllowed(false);
-        pnlJunior.add(scrollPane2);
 
-        //å‘¨æœ«åˆ†é…ç»“æœ
+
+        //©P¥½¤À°tµ²ªG¤¶­±
         pnlCenter.add(pnlWeekendResult,"weekendResult");
         pnlWeekendResult.setLayout(new GridLayout(7,1));
-        JPanel p1=new JPanel();
-        JPanel p2=new JPanel();
-        JPanel p3=new JPanel();
-        JPanel p4=new JPanel();
-        JPanel p5=new JPanel();
-        JPanel p6=new JPanel();
-        JLabel j7=new JLabel();
-        p1.setLayout(new GridLayout(1,6));
-        p2.setLayout(new GridLayout(1,6));
-        p3.setLayout(new GridLayout(1,6));
-        p4.setLayout(new GridLayout(1,6));
-        p5.setLayout(new GridLayout(1,6));
-        p6.setLayout(new GridLayout(1,6));
-        pnlWeekendResult.add(p1);
-        pnlWeekendResult.add(p2);
-        pnlWeekendResult.add(p3);
-        pnlWeekendResult.add(j7);
-        pnlWeekendResult.add(p4);
-        pnlWeekendResult.add(p5);
-        pnlWeekendResult.add(p6);
-        JLabel j11=new JLabel("åœ‹ä¸€å¿ ");
-        JLabel j12=new JLabel("åœ‹ä¸€å­");
-        JLabel j21=new JLabel("åœ‹äºŒå¿ ");
-        JLabel j22=new JLabel("åœ‹äºŒå­");
-        JLabel j31=new JLabel("åœ‹ä¸‰å¿ ");
-        JLabel j32=new JLabel("åœ‹ä¸‰å­");
-        p1.add(j11);
-        p1.add(j12);
-        p1.add(j21);
-        p1.add(j22);
-        p1.add(j31);
-        p1.add(j32);
-        JLabel s11=new JLabel("é«˜ä¸€å¿ ");
-        JLabel s12=new JLabel("é«˜ä¸€å­");
-        JLabel s21=new JLabel("é«˜äºŒå¿ ");
-        JLabel s22=new JLabel("é«˜äºŒå­");
-        JLabel s31=new JLabel("é«˜ä¸‰å¿ ");
-        JLabel s32=new JLabel("é«˜ä¸‰å­");
-        p4.add(s11);
-        p4.add(s12);
-        p4.add(s21);
-        p4.add(s22);
-        p4.add(s31);
-        p4.add(s32);
 
-        JPanel[][][] ball=new JPanel[2][6][2];
-        for (int i =0; i<2; i++)
-            for (int j =0; j<6; j++)
-                for(int k =0; k<2;k++)
-                    ball[i][j][k] = new JPanel();
-
-        for(int i=0;i<6;i++)
-        {
-            p2.add(ball[0][i][0]);
-            p3.add(ball[0][i][1]);
-            p5.add(ball[1][i][0]);
-            p6.add(ball[1][i][1]);
-        }
-
-        //ä¸‹åŠ
+        //¤U¥b
         pnlMenu.add(pnlSouth,BorderLayout.SOUTH);
         pnlSouth.setLayout(new GridLayout());
         FlowLayout flowLayout1 = new FlowLayout();
@@ -314,7 +273,7 @@ public class Main extends JFrame {
         pnlSouth2.add(btnNext);
         pnlSouth.add(pnlSouth2);
 
-        //æŒ‰é’®
+        //«ö¯Ã
         btnHome.addActionListener(new action());
         btnClass.addActionListener(new action());
         btnHistory.addActionListener(new action());
@@ -325,83 +284,519 @@ public class Main extends JFrame {
         btnSetting.addActionListener(new action());
         btnOK.addActionListener(new action());
 
-        //åˆå§‹åŒ–
-        current="weekend";
+        //ªì©l¤Æ
         card.show(pnlCenter,current);
-        lblTitle.setText(getText(current));
+        lblTitle.setText(getTitle(current));
         resetButton();
 
-        //å»ºç«‹ç³»ç»Ÿ
-        try {
-            init();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static void main(String[] args) throws FileNotFoundException {
         // write your code here
         Main frame = new Main();
-        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                super.windowOpened(e);
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    frame.saveFile();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                System.exit(0);
+            }
+        });
         frame.setVisible(true);
     }
 
-    int bl=20+4*4;
-    int cl=6+4*4;
-    int bNum;
-    int cNum;
+    Map<String, ArrayList<String>> distribute(Map<String, Map<String, Integer>> form) {
+        Map<String, ArrayList<String>> court = new HashMap<>();
 
-    public void init() throws IOException {
+        //example
+        for (int i=0; i<school.getBallKinds(); i++) {
+            ArrayList<String> temp = new ArrayList<>();
+            for (int j=0; j<school.getBall(i).getCourtNum(); j++)
+                temp.add(school.getClass(i).getName());
+            court.put(school.getBall(i).getName(), temp);
+        }
 
-//        if (f.exists()){ //è‹¥ä¸æ˜¯ç¬¬ä¸€æ¬¡ä½¿ç”¨
-            d = new RandomAccessFile(f,"rw");
-            bNum=d.readInt();
-            for(int i=0;i<bNum;i++){
-                byte[] bt=new byte[20];
-                d.readFully(bt);
-                int[] arr=new int[4];
-                for(int j=0;j<4;j++)
-                    arr[j]=d.readInt();
-                school.addBall(new Ball(new String(bt),arr[0],arr[1],arr[2],arr[3]));
+        //OP ¤ÀÃş
+        if (school.turn()) {
+
+        }
+
+        return court;
+    }
+
+    public void saveData() {
+        Map<String, Map<String, Integer>> form = new HashMap<>();
+        for (int i=0; i<school.getSenior().length; i++) {
+            Map<String, Integer> temp = new HashMap<>();
+            for (int j=0; j<school.getBallKinds(); j++) {
+                temp.put(school.getBall(j).getName(), Integer.parseInt((String) tabSenior.getValueAt( i, j+1)));
             }
-            cNum=d.readInt();
-            for(int i=0;i<cNum;i++){
-                byte[] bt=new byte[6];
-                d.readFully(bt);
-                int[] arr=new int[2];
-                for(int j=0;j < 3;j++)
-                    arr[j]=d.readInt();
-                boolean b = d.readBoolean();
-                school.addClass(new Class(new String(bt), arr[0], arr[1], b));
+            form.put(school.getClass(i).getName(), temp);
+        }
+        for (int i=0; i<school.getJunior().length; i++) {
+            Map<String, Integer> temp = new HashMap<>();
+            for (int j=0; j<school.getBallKinds(); j++) {
+                temp.put(school.getBall(j).getName(), Integer.parseInt((String) tabJunior.getValueAt( i, j+1)));
             }
-//        } else {//è‹¥æ˜¯ç¬¬ä¸€æ¬¡ä½¿ç”¨
-//
-//            card.show(pnlCenter,"Init");
-//            lblTitle.setText("åˆå§‹è®¾å®š");
-//        }
+            form.put(school.getClass(i + school.getSenior().length).getName(), temp);
+        }
+
+        school.pushHis(form, distribute(form));
+    }
+
+    void resetScore() {
+        pnlScore.removeAll();
+
+        pnlCenter.add(pnlScore,"score");
+//        pnlScore.add(new LabelNotDone());
+
+        ArrayList<String> cList = new ArrayList<>();
+        ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+        ArrayList<String> gList = new ArrayList<String>();
+        ArrayList<String> bList = new ArrayList<String>();
+        cList.add("¯Z¯Å");
+        for (int i=0; i<school.getClassNum(); i++) {
+            cList.add(school.getClass(i).getName());
+        }
+//        String[] s = cList.toArray(new String[cList.size()]);
+//        for (String s1 : s)
+//            System.out.println(s1);
+
+        gList.add("Àu¨}ÂI¼Æ");
+        for (int i=0; i<school.getClassNum(); i++) {
+            gList.add(String.valueOf(school.getClass(i).getGoodPoint()));
+        }
+        list.add(gList);
+
+        bList.add("¹H³WÂI¼Æ");
+        for (int i=0; i<school.getClassNum(); i++) {
+            bList.add(String.valueOf(school.getClass(i).getBadPoint()));
+        }
+        list.add(bList);
+
+        String[][] ss = new String[list.size()][];
+        for (int i=0; i<list.size(); i++) {
+            ss[i] = list.get(i).toArray(new String[list.get(i).size()]);
+        }
+
+        JPanel[] pac=new JPanel[2];
+        DefaultTableModel tableModel = new DefaultTableModel(ss, cList.toArray(new String[cList.size()]));
+        table = new JTable(tableModel) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        table.setRowMargin(10);
+        table.setRowHeight(50);
+        table.setFont(new Font("·s²Ó©úÅé",Font.BOLD,15));
+        for (int i=0; i<school.getClassNum(); i++)
+            table.setValueAt(String.valueOf(school.getClass(i).getGoodPoint()),0,i+1);
+        for (int i=0; i<school.getClassNum(); i++)
+            table.setValueAt(String.valueOf(school.getClass(i).getBadPoint()),1,i+1);
+
+
+        JScrollPane scrollPane=new JScrollPane(table);
+        JPanel[] pan=new JPanel[2];
+        JButton[][] bb = new JButton[2][school.getClassNum()];
+
+        pnlScore.setLayout(new GridLayout(2,1,0,10));
+        // JLabel[] pnlFst=new JLabel[12];
+        for(int i=0;i<2;i++)
+        {
+            pac[i]=new JPanel();
+            pnlScore.add(pac[i]);
+            pac[i].setLayout(new GridLayout(i+1,school.getClassNum()+1,10,0));
+            //pnlFst[i]=new JLabel("       "+juniorData[i][0]);
+            // pnlFst[i+6]=new JLabel("       "+seniorData[i][0]);
+            pan[i]=new JPanel();
+            pan[i].setLayout(new GridLayout(0,school.getClassNum()+1,0,10));
+        }
+        pac[0].add(scrollPane);
+        pac[1].add(pan[0]);
+        pac[1].add(pan[1]);
+//        JLabel lblAdd = new JLabel("¼W¥[Àu¨}ÂI¼Æ");
+//        JLabel lblSub = new JLabel("¼W¥[¹H³WÂI¼Æ");
+        pan[0].add(new JLabel("¼W¥[Àu¨}ÂI¼Æ"));
+        pan[1].add(new JLabel("¼W¥[¹H³WÂI¼Æ"));
+        for(int i=0;i< school.getClassNum();i++)
+        {
+            // pac[0].add(pnlFst[i]);
+            bb[0][i]=new JButton("+1");
+            bb[1][i]=new JButton("-1");
+            for (int j=0; j<2; j++ ) {
+                int finalI = i;
+                int finalJ = j;
+                bb[j][i].addActionListener( new action());
+            }
+            pan[0].add(bb[0][i]);
+            pan[1].add(bb[1][i]);
+        }
+
+        for (int i=0; i<school.getClassNum(); i++) {
+            int index = i;
+            bb[0][i].addActionListener(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    school.getClass(index).addGoodPoint();
+                    table.setValueAt(school.getClass(index).getGoodPoint(),0, index+1);
+                    click("score");
+//                    System.out.println(school.getClass(i).getGoodPoint());
+                }
+            });
+            bb[1][i].addActionListener(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    school.getClass(index).addBadPoint();
+                    table.setValueAt(school.getClass(index).getBadPoint(),1, index+1);
+                    click("score");
+                }
+            });
+        }
 
     }
 
+    void resetSetting() {
+        pnlSetting.removeAll();
+
+        pnlCenter.add(pnlSetting,"setting");
+        pnlSetting.setLayout(new GridLayout(2,1,70,10));
+        pnlSetClass = new JPanel();
+        pnlSetBall = new JPanel();
+        pnlSetting.add(pnlSetClass);
+        pnlSetClass.setLayout(new GridLayout(5,school.getClassNum()+1, 5, 25));
+        pnlSetting.add(pnlSetBall);
+        pnlSetBall.setLayout(new GridLayout(6, school.getBallKinds()+1, 50, 15));
+
+        classField = new JTextField[school.getClassNum()];
+        gPointField = new JTextField[school.getClassNum()];
+        bPointField = new JTextField[school.getClassNum()];
+        banField = new JTextField[school.getClassNum()];
+        btnRemoveClass = new JButton[school.getClassNum()];
+        btnRemoveBall = new JButton[school.getBallKinds()];
+
+        String[]sBall={"²yÃş¦WºÙ","²y¼Æ¶q","²y³õ¼Æ¶q","²y©ç¼Æ¶q","·l·´²y©ç¼Æ"};
+        JLabel classTitle=new JLabel("¯Z¯Å¦WºÙ");
+        JLabel gPointTitle=new JLabel("Àu¨}ÂI¼Æ");
+        JLabel bPointTitle=new JLabel("¹H³WÂI¼Æ");
+        JLabel banTitle=new JLabel("¬O§_¸T²y");
+        JButton btnAddClass=new JButton("·s¼W¯Z¯Å");
+        JLabel ballNameTitle=new JLabel("²yÃş¦WºÙ");
+        JLabel courtTitle=new JLabel("²y³õ¼Æ¶q");
+        JLabel ballTitle=new JLabel("²y¼Æ¶q");
+        JLabel batTitle=new JLabel("²y¨ã¼Æ¶q");
+        JLabel damagedTitle=new JLabel("¤w·l²y¨ã¼Æ¶q");
+        JButton btnAddBall=new JButton("·s¼W²yÃş");
+        pnlSetClass.add(classTitle);
+        for(int i=0;i<school.getClassNum();i++)
+        {
+            classField[i]=new JTextField(school.getClass(i).getName());
+            pnlSetClass.add(classField[i]);
+        }
+        pnlSetClass.add(gPointTitle);
+        for(int i=0;i<school.getClassNum();i++)
+        {
+            gPointField[i]=new JTextField(String.valueOf(school.getClass(i).getGoodPoint()));
+            pnlSetClass.add(gPointField[i]);
+        }
+        pnlSetClass.add(bPointTitle);
+        for(int i=0;i<school.getClassNum();i++)
+        {
+            bPointField[i]=new JTextField(String.valueOf(school.getClass(i).getBadPoint()));
+            pnlSetClass.add(bPointField[i]);
+        }
+        pnlSetClass.add(banTitle);
+        for(int i=0;i<school.getClassNum();i++)
+        {
+            banField[i]=new JTextField(school.getClass(i).getBanned());
+            pnlSetClass.add(banField[i]);
+        }
+        //·s¼W¯Z¯Å«ö¯Ã
+        btnAddClass.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JPanel pane  = new JPanel();
+                pane.setLayout(new GridLayout(0,2,2,2));
+
+                JTextField fieldName = new JTextField("°ª¤T©¾");
+                JTextField fieldGood = new JTextField("0");
+                JTextField fieldBad = new JTextField("0");
+
+                pane.add(new JLabel("¯Z¯Å¦WºÙ"));
+                pane.add(fieldName);
+                pane.add(new JLabel("Àu¨}ÂI¼Æ"));
+                pane.add(fieldGood);
+                pane.add(new JLabel("¹H³WÂI¼Æ"));
+                pane.add(fieldBad);
+
+                int option = JOptionPane.showConfirmDialog(null,
+                                                pane,
+                                                "«Ø¥ß¯Z¯Å",
+                                                JOptionPane.YES_NO_OPTION);
+                if (option == JOptionPane.YES_OPTION) {
+                    String name = fieldName.getText();
+                    if (school.existClass(name)){
+                        JOptionPane.showMessageDialog(null, "¦¹¯Z¯Å¤w¦s¦b¡AµLªk«Ø¥ß¤w¦s¦bªº¯Z¯Å!", "³qª¾", JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        int index = -1;
+                        for (int i=school.getClassNum()-1; i>=0; i--) {
+                            if (school.getClass(i).getGrade() == school.getGrade(name))
+                                index = i;
+                        }
+                        if(index == -1)
+                            school.addClass(new Class(name, Integer.parseInt(fieldGood.getText()), Integer.parseInt(fieldBad.getText())));
+                        else
+                            school.addClass(index, new Class(name, Integer.parseInt(fieldGood.getText()), Integer.parseInt(fieldBad.getText())));
+                        resetSetting();
+
+                        JOptionPane.showMessageDialog(null, "¤w¦¨¥\«Ø¥ß¯Z¯Å "+name+" !", "³qª¾", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        });
+        pnlSetClass.add(btnAddClass);
+        for(int i=0;i<school.getClassNum(); i++) {
+            btnRemoveClass[i] = new JButton("²¾°£¯Z¯Å");
+            int index = i;
+            btnRemoveClass[i].addActionListener(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int result=JOptionPane.showConfirmDialog(null,
+                            "½T©w­n²¾°£¯Z¯Å "+ school.getClass(index).getName() +" ¶Ü?",
+                            "½T»{°T®§",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+
+                    if (result==JOptionPane.YES_OPTION) {
+                        school.removeClass(index);
+                        resetSetting();
+                    }
+
+                }
+            });
+            pnlSetClass.add(btnRemoveClass[i]);
+        }
+
+        //String[][]sSetBall={{"²yÃş¦WºÙ","0","0","0","0"}};
+        ballNameField = new JTextField[school.getBallKinds()];
+        courtField = new JTextField[school.getBallKinds()];
+        ballField = new JTextField[school.getBallKinds()];
+        batField = new JTextField[school.getBallKinds()];
+        damagedField = new JTextField[school.getBallKinds()];
+        pnlSetBall.add(ballNameTitle);
+        for(int i=0; i<school.getBallKinds(); i++)
+        {
+            ballNameField[i]=new JTextField(school.getBall(i).getName());
+            pnlSetBall.add(ballNameField[i]);
+        }
+        pnlSetBall.add(courtTitle);
+        for(int i=0; i<school.getBallKinds(); i++)
+        {
+            courtField[i]=new JTextField(String.valueOf(school.getBall(i).getCourtNum()));
+            pnlSetBall.add(courtField[i]);
+        }
+        pnlSetBall.add(ballTitle);
+        for(int i=0; i<school.getBallKinds(); i++)
+        {
+            ballField[i]=new JTextField(String.valueOf(school.getBall(i).getBallNum()));
+            pnlSetBall.add(ballField[i]);
+        }
+        pnlSetBall.add(batTitle);
+        for(int i=0;i<school.getBallKinds();i++)
+        {
+            batField[i]=new JTextField(String.valueOf(school.getBall(i).getBatNum()));
+            pnlSetBall.add(batField[i]);
+        }
+        pnlSetBall.add(damagedTitle);
+        for(int i=0;i<school.getBallKinds();i++)
+        {
+            damagedField[i]=new JTextField(String.valueOf(school.getBall(i).getBallDamaged()));
+            pnlSetBall.add(damagedField[i]);
+        }
+        btnAddBall.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JPanel pane  = new JPanel();
+                pane.setLayout(new GridLayout(0,2,2,2));
+
+                JTextField fieldName = new JTextField("Äx²y");
+                JTextField fieldCourt = new JTextField("2");
+                JTextField fieldBall = new JTextField("10");
+                JTextField fieldBat = new JTextField("0");
+
+                pane.add(new JLabel("²yÃş¦WºÙ"));
+                pane.add(fieldName);
+                pane.add(new JLabel("²y³õ¼Æ¶q"));
+                pane.add(fieldCourt);
+                pane.add(new JLabel("²y¼Æ¶q"));
+                pane.add(fieldBall);
+                pane.add(new JLabel("²y©ç¼Æ¶q"));
+                pane.add(fieldBat);
+
+                int option = JOptionPane.showConfirmDialog(null,
+                        pane,
+                        "·s¼W²yÃş",
+                        JOptionPane.YES_NO_OPTION);
+                if (option == JOptionPane.YES_OPTION) {
+                    String name = fieldName.getText();
+                    if (school.existBall(name)){
+                        JOptionPane.showMessageDialog(null, "¦¹²yÃş¤w¦s¦b¡AµLªk·s¼W¤w¦s¦bªº²yÃş!", "³qª¾", JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        school.addBall( new Ball(name, Integer.parseInt(fieldCourt.getText()), Integer.parseInt(fieldBall.getText()), Integer.parseInt(fieldBat.getText())));
+                        resetSetting();
+
+                        JOptionPane.showMessageDialog(null, "¤w¦¨¥\·s¼W²yÃş "+name+" !", "³qª¾", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        });
+        pnlSetBall.add(btnAddBall);
+        for(int i=0;i<school.getBallKinds(); i++) {
+            btnRemoveBall[i] = new JButton("²¾°£²yÃş");
+            int index = i;
+            btnRemoveBall[i].addActionListener(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int result=JOptionPane.showConfirmDialog(null,
+                            "½T©w­n²¾°£ "+ school.getBall(index).getName() +" ¶Ü?",
+                            "½T»{°T®§",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+
+                    if (result==JOptionPane.YES_OPTION) {
+                        school.removeBall(index);
+                        resetSetting();
+                    }
+
+                }
+            });
+            pnlSetBall.add(btnRemoveBall[i]);
+        }
+
+        click("setting");
+
+    }
+
+    public void init() throws IOException {
+        if(f.exists()) {//¤£¬O²Ä¤@¦¸µn¤J
+//            System.out.println(gson.toJson(school));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+            String s1 = "";
+            String s2 = "";
+            while ((s2 = reader.readLine()) != null) s1 += s2;
+            reader.close();
+
+            school = new Gson().fromJson(s1, School.class);
+//            school = new Gson().fromJson(new FileReader(f), School.class);
+        } else{//²Ä¤@¦¸µn¤J
+//            new Gson().toJson(new School(), new FileWriter(f));
+            school=new School();
+            saveFile();
+            current = "setting";
+        }
+
+    }
+
+    public void saveFile() throws IOException {
+        String s = new Gson().toJson(school);
+        OutputStreamWriter output = new OutputStreamWriter(new FileOutputStream(f));
+        output.write(s);
+        output.close();
+    }
 
     public void resetButton () {
         btnNext.setEnabled(!next.empty());
         btnBack.setEnabled(!previous.empty());
-        btnOK.setEnabled(current=="weekend"||current=="setting");
-//        showStack();//ç”¨ä»¥æ£€è§†å †å é”™è¯¯
+        btnOK.setEnabled(Objects.equals(current, "weekend") || Objects.equals(current, "setting"));
+//        showStack();//¥Î¥HÅã¥Ü°ï¿nµ²ªG
     }
 
-    String getText(String str) {
+    public void resetResult() {
+        pnlWeekendResult.removeAll();
+
+        pnl = new JPanel[2][Math.max(school.getSenior().length, school.getJunior().length)];
+        for (int i=0; i<school.getSenior().length; i++) {
+            pnl[0][i] = new JPanel();
+            pnl[0][i].setLayout(new GridLayout());
+            pnlWeekendResult.add(pnl[0][i]);
+            pnl[0][i].add(new JLabel(school.getSenior()[i].getName()));
+        }
+
+        for (int i=0; i<school.getJunior().length; i++) {
+            pnl[1][i] = new JPanel();
+            pnl[1][i].setLayout(new GridLayout());
+            pnlWeekendResult.add(pnl[1][i]);
+            pnl[1][i].add(new JLabel(school.getJunior()[i].getName()));
+        }
+
+        for (int i=0; i<school.getBallKinds();i++) {
+            for (int j=0; j<school.getBall(i).getCourtNum(); j++) {
+                String cls = school.getHisCourt(school.getBall(i).getName(),j);
+                int grade = school.getClass(cls).isJunior() ? 1:0;
+                if (grade == 0) {
+                    pnl[grade][school.getSeniorIndex(cls)].add(new JLabel(school.getBall(i).getName()+String.valueOf(j+1)));
+                } else {
+                    pnl[grade][school.getJuniorIndex(cls)].add(new JLabel(school.getBall(i).getName()+String.valueOf(j+1)));
+                }
+            }
+        }
+
+
+    }
+
+    String getTitle(String str) {
         switch (str) {
-            case "weekend" -> { return "æ˜ŸæœŸæ—¥å„ç­çƒå ´å¡«å¯«å¿—é¡˜"; }
-            case "weekendResult" -> { return "æ˜ŸæœŸæ—¥çƒå ´åˆ†é…çµæœ"; }
-            case "class" -> { return "å„ç­è³‡æ–™"; }
-            case "history" -> { return "æ­·å²ç´€éŒ„"; }
-            case "score" -> { return "å„ç­å„ªç¼ºé»æ•¸"; }
-            case "setting" -> { return "è¨­å®š"; }
-            case "timeTable" -> { return "æ™‚é–“è¡¨"; }
+            case "weekend" -> { return "¬P´Á¤é¦U¯Z²y³õ¶ñ¼g§ÓÄ@"; }
+            case "weekendResult" -> { return "¬P´Á¤é²y³õ¤À°tµ²ªG"; }
+            case "class" -> { return "¦U¯Z¸ê®Æ"; }
+            case "history" -> { return "¾ú¥v¬ö¿ı"; }
+            case "score" -> { return "¦U¯ZÀu¯ÊÂI¼Æ"; }
+            case "setting" -> { return "³]©w"; }
+            case "timeTable" -> { return "®É¶¡ªí"; }
 
             default -> throw new IllegalStateException("Unexpected value: " + str);
         }
+    }
+
+    void updateSetting() {
+        //¯Z¯Å¸ê®Æ§ó·s
+        for(int i=0; i< school.getClassNum(); i++)
+            school.getClass(i).setClassName(classField[i].getText());
+        for(int i=0; i< school.getClassNum(); i++)
+            school.getClass(i).setGoodPoint(Integer.parseInt(gPointField[i].getText()));
+        for(int i=0; i< school.getClassNum(); i++)
+            school.getClass(i).setBadPoint(Integer.parseInt(bPointField[i].getText()));
+//                        for(int i=0; i< school.getClassNum(); i++)
+//                            school.getClass(i)(classField[i].getText());
+        //²yÃş¸ê®Æ§ó·s
+        int num = school.getBallKinds();
+        school.clearBall();
+        for (int i=0; i<num; i++) {
+            school.addBall(new Ball(
+                    ballNameField[i].getText(),
+                    Integer.parseInt(courtField[i].getText()),
+                    Integer.parseInt(ballField[i].getText()),
+                    Integer.parseInt(batField[i].getText()),
+                    Integer.parseInt(damagedField[i].getText())));
+        }
+        try {
+            saveFile();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+
+        JOptionPane.showMessageDialog(null,
+                "¸ê®Æ¤w§ó·s¡A¤W¶Ç¦Ü¸ê®Æ®w",
+                "·ÅÄÉ¤p³qª¾",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     void click(String str) {
@@ -409,47 +804,61 @@ public class Main extends JFrame {
         current = str;
         next.clear();
         card.show(pnlCenter,current);
-        lblTitle.setText(getText(current));
+        lblTitle.setText(getTitle(current));
         resetButton();
     }
 
     class action implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (btnHome==e.getSource()) {
-                click("weekend");
-            } else if(e.getSource()==btnOK){
-                click("weekendResult");
-            } else if(e.getSource()==btnBack){
-                next.push(current);
-                current = previous.pop();
-                card.show(pnlCenter,current);
-                lblTitle.setText(getText(current));
-                resetButton();
-            } else if (e.getSource()==btnNext) {
-                previous.push(current);
-                current = next.pop();
-                card.show(pnlCenter,current);
-                lblTitle.setText(getText(current));
-                resetButton();
-            } else if(e.getSource()==btnClass){
-                click("class");
-            } else if(e.getSource()==btnHistory){
-                click("history");
-            } else if(e.getSource()==btnScore){
-                click("score");
-            } else if(e.getSource()==btnSetting){
-                click("setting");
-            } else if(e.getSource()==btnTimeTable){
-                click("timeTable");
-            } else {
-                throw new IllegalStateException("Unexpected value: " + e.getSource());
+            boolean b = true;
+            if(b) {
+                if (btnHome==e.getSource()) {
+                    click("weekend");
+                } else if(e.getSource()==btnOK){
+                    if(Objects.equals(current, "weekend")) {
+                        saveData();
+//                        distribute();
+                        resetResult();
+                        click("weekendResult");
+                    } else if(current.equals("setting")) {
+                        updateSetting();
+                    }
+                } else if(e.getSource()==btnBack){
+                    next.push(current);
+                    current = previous.pop();
+                    card.show(pnlCenter,current);
+                    lblTitle.setText(getTitle(current));
+                    resetButton();
+                } else if (e.getSource()==btnNext) {
+                    previous.push(current);
+                    current = next.pop();
+                    card.show(pnlCenter,current);
+                    lblTitle.setText(getTitle(current));
+                    resetButton();
+                } else if(e.getSource()==btnClass){
+                    click("class");
+                } else if(e.getSource()==btnHistory){
+                    click("history");
+                } else if(e.getSource()==btnScore){
+                    resetScore();
+                    click("score");
+                } else if(e.getSource()==btnSetting){
+                    resetSetting();
+                    click("setting");
+                } else if(e.getSource()==btnTimeTable){
+                    click("timeTable");
+//            } else if() {
+//
+                } else {
+                    throw new IllegalStateException("Unexpected value: " + e.getSource());
+                }
             }
 
         }
     }
 
-    void showStack() {
+    void showStack() { //ÀËµø¥Î¡AÅã¥Ü­¶­±°ï¿n
         System.out.println("next:");
         for (String s : next) System.out.println(s);
         System.out.println("previous:");
@@ -457,11 +866,11 @@ public class Main extends JFrame {
         System.out.println();
     }
 
-    class LabelNotDone extends JLabel{
+    static class LabelNotDone extends JLabel{
         LabelNotDone( ){
             this.setBackground(Color.RED);
-            this.setFont(new Font("æ–°ç»†æ˜é«”",Font.BOLD,100));
-            this.setText(" æ­¤é é¢å°šæœªå®Œæˆï¼ è«‹è¦‹è«’");
+            this.setFont(new Font("·s²Ó©úÅé",Font.BOLD,100));
+            this.setText(" ¦¹­¶­±©|¥¼§¹¦¨¡I ½Ğ¨£½Ì");
 
         }
     }

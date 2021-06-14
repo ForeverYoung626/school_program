@@ -141,7 +141,7 @@ public class Main extends Frame {
         //視窗
         this.setSize(width,height);
         this.setLocation(x,y);
-        this.setTitle("學務處借球登?　超OP Fy(By) 兩本書&一只羊");
+        this.setTitle("學務處借球登記　超OP Fy(By) 兩本書&一只羊");
         BorderLayout thisLayout = new BorderLayout(50,60);
         this.setLayout(thisLayout);
 
@@ -152,30 +152,48 @@ public class Main extends Frame {
 //        pnlMenu.setLayout(layMenu);
         pnlMenu.setLayout(new BorderLayout());
 //        pnlMenu.setSize(1400,800);
+//        pnlMenu.setOpaque(true);
 //        pnlMenu.setBackground(Color.YELLOW);
 
         //上半
         pnlMenu.add(pnlNorth,BorderLayout.NORTH);
         pnlNorth.setAlignmentY(40);
         pnlNorth.setLayout(new GridLayout());
+//        pnlNorth.setOpaque(true);
+//        pnlNorth.setBackground(Color.YELLOW);
+
 //        lblTitle.setBackground(Color.BLACK);
         pnlNorth.add(pnlNW);
         pnlNW.setLayout(new FlowLayout());
+//        pnlNW.setOpaque(true);
+//        pnlNW.setBackground(Color.YELLOW);
         pnlNW.add(lblTitle);
-        lblTitle.setBackground(Color.GREEN);
-        lblTitle.setFont(new Font("新?明體",Font.BOLD,50));
-//        lblTitle.setText("各班球?分配");//可以?
+        lblTitle.setOpaque(true);
+        lblTitle.setBackground(Color.cyan);
+        lblTitle.setFont(new Font("Dialog",Font.BOLD,55));
         pnlNorth.add(pnlNE);
         pnlNE.setLayout(new GridLayout(2,1));
+//        pnlNE.setOpaque(true);
+//        pnlNE.setBackground(Color.YELLOW);
         pnlNE.add(pnlNE1);
+//        pnlNE1.setOpaque(true);
+//        pnlNE1.setBackground(Color.YELLOW);
         pnlNE1.setLayout(new GridLayout());
 
         //日期
         lblTime.setText("民國"+school.getYear()+"年"+school.getMonth()+"月"+school.getDate()+"日 星期"+school.getDay());
+        lblTime.setFont(new Font("Dialog", Font.BOLD, 16));
         pnlDate.add(lblTime);
         pnlNE1.add(pnlDate);
 
         //功能表
+        btnHome.setFont(new Font("Dialog", Font.BOLD, 16));
+        lblSearch.setFont(new Font("Dialog", Font.BOLD, 16));
+        btnHistory.setFont(new Font("Dialog", Font.BOLD, 16));
+        btnClass.setFont(new Font("Dialog", Font.BOLD, 16));
+        btnScore.setFont(new Font("Dialog", Font.BOLD, 16));
+        btnTimeTable.setFont(new Font("Dialog", Font.BOLD, 16));
+
         pnlFunction.setLayout(new FlowLayout());
         pnlFunction.add(btnHome);
         pnlFunction.add(lblSearch);
@@ -186,7 +204,7 @@ public class Main extends Frame {
         pnlNE.add(pnlFunction);
 
         //內容
-        
+
         pnlMenu.add(pnlCenter,BorderLayout.CENTER);
 //        pnlCenter.setLayout(new GridLayout());
         pnlCenter.setLayout(card);
@@ -204,9 +222,38 @@ public class Main extends Frame {
         //設定介面
         resetSetting();
 
-        //時間表界面
+       //時間表界面
         pnlCenter.add(pnlTimeTable,"timeTable");
-        pnlTimeTable.add(new LabelNotDone());
+        //pnlTimeTable.add(new LabelNotDone());
+        pnlTimeTable.setLayout(new GridLayout(10,8, 5, 10));
+        pnlTimeTable.add(new JLabel(""));
+        JLabel[] num=new JLabel[9];
+        for(int j=1;j<=7;j++) {
+            String str = new String();
+            switch (j){
+                case 7->{str="星期日";}
+                case 1->{str="星期一";}
+                case 2->{str="星期二";}
+                case 3->{str="星期三";}
+                case 4->{str="星期四";}
+                case 5->{str="星期五";}
+                case 6->{str="星期六";}
+            }
+            JLabel lbl = new JLabel(str, JLabel.CENTER);
+            lbl.setFont(new Font("Dialog",Font.BOLD,20));
+            pnlTimeTable.add(lbl);
+        }
+        for(int i=0; i<9; i++) {
+            num[i]=new JLabel("第 "+String.valueOf(i+1)+" 節", JLabel.CENTER);
+//            System.out.println(num[i].getFont());
+            num[i].setFont(new Font( "Dialog",Font.BOLD,20));
+            pnlTimeTable.add(num[i]);
+            for(int j=0; j<7; j++) {
+                JTextField txt = new JTextField("" );
+                txt.setFont(new Font("Dialog",Font.BOLD,20));
+                pnlTimeTable.add(txt);
+            }
+        }
 
         //初始界面 (已并入?定界面)
 //        pnlCenter.add(pnlInti,"Init");
@@ -248,9 +295,16 @@ public class Main extends Frame {
         pnlSenior.setLayout(new GridLayout());
         tabSenior.getTableHeader().setReorderingAllowed(false);
         tabSenior.setUpdateSelectionOnSort(false);
+        tabSenior.setFont(new Font("Dialog", Font.BOLD, 16));
+        tabSenior.setRowMargin(10);
+        tabSenior.setRowHeight(40);
+
         pnlJunior.setLayout(new GridLayout());
-//        tabJunior.setUpdateSelectionOnSort(false);
-//        tabJunior.getTableHeader().setReorderingAllowed(false);
+        tabJunior.setUpdateSelectionOnSort(false);
+        tabJunior.setFont(new Font("Dialog", Font.BOLD, 16));
+        tabJunior.setRowMargin(10);
+        tabJunior.setRowHeight(40);
+        tabJunior.getTableHeader().setReorderingAllowed(false);
 
 
         //周末分配結果介面
@@ -267,6 +321,9 @@ public class Main extends Frame {
         FlowLayout flowLayout = new FlowLayout();
         flowLayout.setAlignment(FlowLayout.RIGHT);
         pnlSouth2.setLayout(flowLayout);
+        btnOK.setFont(new Font("Dialog", Font.BOLD, 16));
+        btnBack.setFont(new Font("Dialog", Font.BOLD, 16));
+        btnNext.setFont(new Font("Dialog", Font.BOLD, 16));
         pnlSouth2.add(btnOK);
         pnlSouth2.add(btnBack);
         pnlSouth2.add(btnNext);
@@ -284,9 +341,7 @@ public class Main extends Frame {
         btnOK.addActionListener(new action());
 
         //初始化
-        card.show(pnlCenter,current);
-        lblTitle.setText(getTitle(current));
-        resetButton();
+        click(current);
 
     }
 
@@ -404,7 +459,7 @@ public class Main extends Frame {
         };
         table.setRowMargin(10);
         table.setRowHeight(50);
-        table.setFont(new Font("新細明體",Font.BOLD,15));
+        table.setFont(new Font("Dialog",Font.BOLD,16));
         for (int i=0; i<school.getClassNum(); i++)
             table.setValueAt(String.valueOf(school.getClass(i).getGoodPoint()),0,i+1);
         for (int i=0; i<school.getClassNum(); i++)
@@ -430,10 +485,12 @@ public class Main extends Frame {
         pac[0].add(scrollPane);
         pac[1].add(pan[0]);
         pac[1].add(pan[1]);
-//        JLabel lblAdd = new JLabel("增加優良點數");
-//        JLabel lblSub = new JLabel("增加違規點數");
-        pan[0].add(new JLabel("增加優良點數"));
-        pan[1].add(new JLabel("增加違規點數"));
+        JLabel lblAdd = new JLabel("增加優良點數");
+        JLabel lblSub = new JLabel("增加違規點數");
+        lblAdd.setFont(new Font("Dialog", Font.BOLD, 16));
+        lblSub.setFont(new Font("Dialog", Font.BOLD, 16));
+        pan[0].add(lblAdd);
+        pan[1].add(lblSub);
         for(int i=0;i< school.getClassNum();i++)
         {
             // pac[0].add(pnlFst[i]);
@@ -491,39 +548,54 @@ public class Main extends Frame {
         btnRemoveBall = new JButton[school.getBallKinds()];
 
         String[]sBall={"球類名稱","球數量","球場數量","球拍數量","損毀球拍數"};
-        JLabel classTitle=new JLabel("班級名稱");
-        JLabel gPointTitle=new JLabel("優良點數");
-        JLabel bPointTitle=new JLabel("違規點數");
-        JLabel banTitle=new JLabel("是否禁球");
+        JLabel classTitle=new JLabel("班級名稱", JLabel.CENTER);
+        classTitle.setFont(new Font("Dialog", Font.BOLD, 16));
+        JLabel gPointTitle=new JLabel("優良點數", JLabel.CENTER);
+        gPointTitle.setFont(new Font("Dialog", Font.BOLD, 16));
+        JLabel bPointTitle=new JLabel("違規點數", JLabel.CENTER);
+        bPointTitle.setFont(new Font("Dialog", Font.BOLD, 16));
+        JLabel banTitle=new JLabel("是否禁球", JLabel.CENTER);
+        banTitle.setFont(new Font("Dialog", Font.BOLD, 16));
         JButton btnAddClass=new JButton("新增班級");
-        JLabel ballNameTitle=new JLabel("球類名稱");
-        JLabel courtTitle=new JLabel("球場數量");
-        JLabel ballTitle=new JLabel("球數量");
-        JLabel batTitle=new JLabel("球具數量");
-        JLabel damagedTitle=new JLabel("已損球具數量");
+        btnAddClass.setFont(new Font("Dialog", Font.BOLD, 16));
+        JLabel ballNameTitle=new JLabel("球類名稱", JLabel.CENTER);
+        ballNameTitle.setFont(new Font("Dialog", Font.BOLD, 16));
+        JLabel courtTitle=new JLabel("球場數量", JLabel.CENTER);
+        courtTitle.setFont(new Font("Dialog", Font.BOLD, 16));
+        JLabel ballTitle=new JLabel("球的數量", JLabel.CENTER);
+        ballTitle.setFont(new Font("Dialog", Font.BOLD, 16));
+        JLabel batTitle=new JLabel("球拍數量", JLabel.CENTER);
+        batTitle.setFont(new Font("Dialog", Font.BOLD, 16));
+        JLabel damagedTitle=new JLabel("已損球具數量", JLabel.CENTER);
+        damagedTitle.setFont(new Font("Dialog", Font.BOLD, 16));
         JButton btnAddBall=new JButton("新增球類");
+        btnAddBall.setFont(new Font("Dialog", Font.BOLD, 16));
         pnlSetClass.add(classTitle);
         for(int i=0;i<school.getClassNum();i++)
         {
             classField[i]=new JTextField(school.getClass(i).getName());
+            classField[i].setFont(new Font("Dialog", Font.BOLD, 16));
             pnlSetClass.add(classField[i]);
         }
         pnlSetClass.add(gPointTitle);
         for(int i=0;i<school.getClassNum();i++)
         {
             gPointField[i]=new JTextField(String.valueOf(school.getClass(i).getGoodPoint()));
+            gPointField[i].setFont(new Font("Dialog", Font.BOLD, 16));
             pnlSetClass.add(gPointField[i]);
         }
         pnlSetClass.add(bPointTitle);
         for(int i=0;i<school.getClassNum();i++)
         {
             bPointField[i]=new JTextField(String.valueOf(school.getClass(i).getBadPoint()));
+            bPointField[i].setFont(new Font("Dialog", Font.BOLD, 16));
             pnlSetClass.add(bPointField[i]);
         }
         pnlSetClass.add(banTitle);
         for(int i=0;i<school.getClassNum();i++)
         {
             banField[i]=new JTextField(school.getClass(i).getBanned());
+            banField[i].setFont(new Font("Dialog", Font.BOLD, 16));
             pnlSetClass.add(banField[i]);
         }
         //新增班級按紐
@@ -572,6 +644,7 @@ public class Main extends Frame {
         pnlSetClass.add(btnAddClass);
         for(int i=0;i<school.getClassNum(); i++) {
             btnRemoveClass[i] = new JButton("移除班級");
+            btnRemoveClass[i].setFont(new Font("Dialog", Font.BOLD, 16));
             int index = i;
             btnRemoveClass[i].addActionListener(new AbstractAction() {
                 @Override
@@ -602,30 +675,35 @@ public class Main extends Frame {
         for(int i=0; i<school.getBallKinds(); i++)
         {
             ballNameField[i]=new JTextField(school.getBall(i).getName());
+            ballNameField[i].setFont(new Font("Dialog", Font.BOLD, 16));
             pnlSetBall.add(ballNameField[i]);
         }
         pnlSetBall.add(courtTitle);
         for(int i=0; i<school.getBallKinds(); i++)
         {
             courtField[i]=new JTextField(String.valueOf(school.getBall(i).getCourtNum()));
+            courtField[i].setFont(new Font("Dialog", Font.BOLD, 16));
             pnlSetBall.add(courtField[i]);
         }
         pnlSetBall.add(ballTitle);
         for(int i=0; i<school.getBallKinds(); i++)
         {
             ballField[i]=new JTextField(String.valueOf(school.getBall(i).getBallNum()));
+            ballField[i].setFont(new Font("Dialog", Font.BOLD, 16));
             pnlSetBall.add(ballField[i]);
         }
         pnlSetBall.add(batTitle);
         for(int i=0;i<school.getBallKinds();i++)
         {
             batField[i]=new JTextField(String.valueOf(school.getBall(i).getBatNum()));
+            batField[i].setFont(new Font("Dialog", Font.BOLD, 16));
             pnlSetBall.add(batField[i]);
         }
         pnlSetBall.add(damagedTitle);
         for(int i=0;i<school.getBallKinds();i++)
         {
             damagedField[i]=new JTextField(String.valueOf(school.getBall(i).getBallDamaged()));
+            damagedField[i].setFont(new Font("Dialog", Font.BOLD, 16));
             pnlSetBall.add(damagedField[i]);
         }
         btnAddBall.addActionListener(new AbstractAction() {
@@ -639,13 +717,13 @@ public class Main extends Frame {
                 JTextField fieldBall = new JTextField("10");
                 JTextField fieldBat = new JTextField("0");
 
-                pane.add(new JLabel("球類名稱"));
+                pane.add(new JLabel("球類名稱", JLabel.CENTER));
                 pane.add(fieldName);
-                pane.add(new JLabel("球場數量"));
+                pane.add(new JLabel("球場數量", JLabel.CENTER));
                 pane.add(fieldCourt);
-                pane.add(new JLabel("球數量"));
+                pane.add(new JLabel("球數量", JLabel.CENTER));
                 pane.add(fieldBall);
-                pane.add(new JLabel("球拍數量"));
+                pane.add(new JLabel("球拍數量", JLabel.CENTER));
                 pane.add(fieldBat);
 
                 int option = JOptionPane.showConfirmDialog(null,
@@ -668,6 +746,7 @@ public class Main extends Frame {
         pnlSetBall.add(btnAddBall);
         for(int i=0;i<school.getBallKinds(); i++) {
             btnRemoveBall[i] = new JButton("移除球類");
+            btnRemoveBall[i].setFont(new Font("Dialog", Font.BOLD, 16));
             int index = i;
             btnRemoveBall[i].addActionListener(new AbstractAction() {
                 @Override
@@ -740,7 +819,7 @@ public class Main extends Frame {
             lbl.setOpaque(true);
             lbl.setBackground(Color.BLACK);
             lbl.setForeground(Color.yellow);
-            lbl.setFont(new Font("新細明體",Font.BOLD,25));
+            lbl.setFont(new Font("Dialog",Font.BOLD,25));
             pnl[0][i].add(lbl);
             pnlWeekendResult.add(pnl[0][i]);
         }
@@ -752,7 +831,7 @@ public class Main extends Frame {
             lbl.setOpaque(true);
             lbl.setBackground(Color.BLACK);
             lbl.setForeground(Color.YELLOW);
-            lbl.setFont(new Font("新細明體",Font.BOLD,25));
+            lbl.setFont(new Font("Dialog",Font.BOLD,25));
             pnl[1][i].add(lbl);
             pnlWeekendResult.add(pnl[1][i]);
         }
@@ -763,11 +842,11 @@ public class Main extends Frame {
                 int grade = school.getClass(cls).isJunior() ? 1:0;
                 if (grade == 0) {
                     JLabel lbl  = new JLabel(school.getBall(i).getName()+String.valueOf(j+1));
-                    lbl.setFont(new Font("新細明體",Font.BOLD,25));
+                    lbl.setFont(new Font("Dialog",Font.BOLD,25));
                     pnl[grade][school.getSeniorIndex(cls)].add(lbl);
                 } else {
                     JLabel lbl = new JLabel(school.getBall(i).getName()+String.valueOf(j+1));
-                    lbl.setFont(new Font("新細明體",Font.BOLD,25));
+                    lbl.setFont(new Font("Dialog",Font.BOLD,25));
                     pnl[grade][school.getJuniorIndex(cls)].add(lbl);
                 }
             }
@@ -829,6 +908,7 @@ public class Main extends Frame {
         next.clear();
         card.show(pnlCenter,current);
         lblTitle.setText(getTitle(current));
+//        lblTitle.setSize(400, 60);
         resetButton();
     }
 
@@ -893,7 +973,7 @@ public class Main extends Frame {
     static class LabelNotDone extends JLabel{
         LabelNotDone( ){
             this.setBackground(Color.RED);
-            this.setFont(new Font("新細明體",Font.BOLD,100));
+            this.setFont(new Font("Dialog",Font.BOLD,100));
             this.setText(" 此頁面尚未完成！ 請見諒");
 
         }

@@ -10,6 +10,8 @@ public class School {
     private ArrayList<Ball> balls = new ArrayList<Ball>();
     private ArrayList<His> history = new ArrayList<His>();
     private boolean turn;
+    private int seniorTurn;
+    private int juniorTurn;
 
     Calendar now = Calendar.getInstance();
 
@@ -133,6 +135,18 @@ public class School {
                 return i;
         }
         return -1;
+    }
+
+    public int getJuniorTurn() {
+        int temp = juniorTurn;
+        juniorTurn = (juniorTurn+1)%this.getJunior().length;
+        return temp;
+    }
+
+    public int getSeniorTurn() {
+        int temp = seniorTurn;
+        seniorTurn = (seniorTurn+1)%this.getSenior().length;
+        return temp;
     }
 
     public boolean isSenior(String name) {

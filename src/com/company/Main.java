@@ -254,8 +254,7 @@ public class Main extends Frame {
 
 
         //周末分配結果介面
-        pnlCenter.add(pnlWeekendResult,"weekendResult");
-        pnlWeekendResult.setLayout(new GridLayout(7,1));
+//        resetResult();
 
         //下半
         pnlMenu.add(pnlSouth,BorderLayout.SOUTH);
@@ -317,16 +316,24 @@ public class Main extends Frame {
         Map<String, ArrayList<String>> court = new HashMap<>();
 
         //example
-        for (int i=0; i<school.getBallKinds(); i++) {
-            ArrayList<String> temp = new ArrayList<>();
-            for (int j=0; j<school.getBall(i).getCourtNum(); j++)
-                temp.add(school.getClass(i).getName());
-            court.put(school.getBall(i).getName(), temp);
-        }
+//        for (int i=0; i<school.getBallKinds(); i++) {
+//            ArrayList<String> temp = new ArrayList<>();
+//            for (int j=0; j<school.getBall(i).getCourtNum(); j++)
+//                temp.add(school.getClass(i).getName());
+//            court.put(school.getBall(i).getName(), temp);
+//        }
 
         //OP 分類
-        if (school.turn()) {
-
+        for (int i=0; i<school.getBallKinds(); i++) {
+            ArrayList<String> temp = new ArrayList<>();
+            for (int j=0; j<school.getBall(i).getCourtNum(); j++) {
+                if (school.turn()) {
+                    temp.add(school.getSenior()[school.getSeniorTurn()].getName());
+                } else {
+                    temp.add(school.getJunior()[school.getJuniorTurn()].getName());
+                }
+                court.put(school.getBall(i).getName(), temp);
+            }
         }
 
         return court;
@@ -722,19 +729,32 @@ public class Main extends Frame {
     public void resetResult() {
         pnlWeekendResult.removeAll();
 
+        pnlCenter.add(pnlWeekendResult,"weekendResult");
+        pnlWeekendResult.setLayout(new GridLayout(0,2));
+
         pnl = new JPanel[2][Math.max(school.getSenior().length, school.getJunior().length)];
         for (int i=0; i<school.getSenior().length; i++) {
             pnl[0][i] = new JPanel();
-            pnl[0][i].setLayout(new GridLayout());
+            pnl[0][i].setLayout(new FlowLayout(FlowLayout.LEFT, 30, 0));
+            JLabel lbl = new JLabel(school.getSenior()[i].getName());
+            lbl.setOpaque(true);
+            lbl.setBackground(Color.BLACK);
+            lbl.setForeground(Color.yellow);
+            lbl.setFont(new Font("新細明體",Font.BOLD,25));
+            pnl[0][i].add(lbl);
             pnlWeekendResult.add(pnl[0][i]);
-            pnl[0][i].add(new JLabel(school.getSenior()[i].getName()));
         }
 
         for (int i=0; i<school.getJunior().length; i++) {
             pnl[1][i] = new JPanel();
-            pnl[1][i].setLayout(new GridLayout());
+            pnl[1][i].setLayout(new FlowLayout(FlowLayout.LEFT, 30, 0));
+            JLabel lbl = new JLabel(school.getJunior()[i].getName());
+            lbl.setOpaque(true);
+            lbl.setBackground(Color.BLACK);
+            lbl.setForeground(Color.YELLOW);
+            lbl.setFont(new Font("新細明體",Font.BOLD,25));
+            pnl[1][i].add(lbl);
             pnlWeekendResult.add(pnl[1][i]);
-            pnl[1][i].add(new JLabel(school.getJunior()[i].getName()));
         }
 
         for (int i=0; i<school.getBallKinds();i++) {
@@ -742,9 +762,13 @@ public class Main extends Frame {
                 String cls = school.getHisCourt(school.getBall(i).getName(),j);
                 int grade = school.getClass(cls).isJunior() ? 1:0;
                 if (grade == 0) {
-                    pnl[grade][school.getSeniorIndex(cls)].add(new JLabel(school.getBall(i).getName()+String.valueOf(j+1)));
+                    JLabel lbl  = new JLabel(school.getBall(i).getName()+String.valueOf(j+1));
+                    lbl.setFont(new Font("新細明體",Font.BOLD,25));
+                    pnl[grade][school.getSeniorIndex(cls)].add(lbl);
                 } else {
-                    pnl[grade][school.getJuniorIndex(cls)].add(new JLabel(school.getBall(i).getName()+String.valueOf(j+1)));
+                    JLabel lbl = new JLabel(school.getBall(i).getName()+String.valueOf(j+1));
+                    lbl.setFont(new Font("新細明體",Font.BOLD,25));
+                    pnl[grade][school.getJuniorIndex(cls)].add(lbl);
                 }
             }
         }

@@ -298,13 +298,15 @@ public class Main extends Frame {
         tabSenior.setFont(new Font("Dialog", Font.BOLD, 16));
         tabSenior.setRowMargin(10);
         tabSenior.setRowHeight(40);
+        tabSenior.getTableHeader().setFont(new Font("Dialog", Font.BOLD, 16));
 
         pnlJunior.setLayout(new GridLayout());
+        tabJunior.getTableHeader().setReorderingAllowed(false);
         tabJunior.setUpdateSelectionOnSort(false);
         tabJunior.setFont(new Font("Dialog", Font.BOLD, 16));
         tabJunior.setRowMargin(10);
         tabJunior.setRowHeight(40);
-        tabJunior.getTableHeader().setReorderingAllowed(false);
+        tabJunior.getTableHeader().setFont(new Font("Dialog", Font.BOLD, 16));
 
 
         //周末分配結果介面
@@ -459,6 +461,7 @@ public class Main extends Frame {
         };
         table.setRowMargin(10);
         table.setRowHeight(50);
+        table.getTableHeader().setFont(new Font("Dialog",Font.BOLD,16));
         table.setFont(new Font("Dialog",Font.BOLD,16));
         for (int i=0; i<school.getClassNum(); i++)
             table.setValueAt(String.valueOf(school.getClass(i).getGoodPoint()),0,i+1);
@@ -496,11 +499,13 @@ public class Main extends Frame {
             // pac[0].add(pnlFst[i]);
             bb[0][i]=new JButton("+1");
             bb[1][i]=new JButton("-1");
-            for (int j=0; j<2; j++ ) {
-                int finalI = i;
-                int finalJ = j;
-                bb[j][i].addActionListener( new action());
-            }
+            bb[0][i].setFont(new Font("Dialog",Font.BOLD,16));
+            bb[1][i].setFont(new Font("Dialog",Font.BOLD,16));
+//            for (int j=0; j<2; j++ ) {
+//                int finalI = i;
+//                int finalJ = j;
+//                bb[j][i].addActionListener( new action());
+//            }
             pan[0].add(bb[0][i]);
             pan[1].add(bb[1][i]);
         }
@@ -596,6 +601,7 @@ public class Main extends Frame {
         {
             banField[i]=new JTextField(school.getClass(i).getBanned());
             banField[i].setFont(new Font("Dialog", Font.BOLD, 16));
+            banField[i].setEditable(false);
             pnlSetClass.add(banField[i]);
         }
         //新增班級按紐

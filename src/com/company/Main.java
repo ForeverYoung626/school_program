@@ -25,7 +25,7 @@ public class Main extends Frame {
 
     School school;
     CardLayout card = new CardLayout();
-    String current = "weekend";
+    String current;
 
     //位置樣板
     JPanel pnlMenu = new JPanel();
@@ -36,7 +36,7 @@ public class Main extends Frame {
     JPanel pnlDate = new JPanel();
     JPanel pnlFunction = new JPanel();
     JPanel pnlCenter = new JPanel();
-    JPanel pnlScore = new JPanel();
+//    JPanel pnlClass = new JPanel();
     JPanel pnlSouth = new JPanel();
     JPanel pnlSouth1 = new JPanel();
     JPanel pnlSouth2 = new JPanel();
@@ -74,7 +74,7 @@ public class Main extends Frame {
     JButton btnHome = new JButton("主頁面");
     JButton btnHistory = new JButton("歷史紀錄");
     JButton btnClass = new JButton("班級");
-    JButton btnScore = new JButton("點數");
+//    JButton btnClass = new JButton("點數");
     JButton btnTimeTable = new JButton("時間表");
     JButton btnSetting = new JButton("設定");
     JButton btnOK = new JButton("確定");
@@ -87,12 +87,14 @@ public class Main extends Frame {
     JTextField[] gPointField;
     JTextField[] bPointField;
     JTextField[] banField;
+    JButton[] btnUnban;
 
     JTextField[] ballNameField;
     JTextField[] courtField;
     JTextField[] ballField;
     JTextField[] batField;
     JTextField[] damagedField;
+    JTextField[][] timeTablet = new JTextField[7][9];
 
     String [] ballName;
 
@@ -181,7 +183,7 @@ public class Main extends Frame {
         pnlNE1.setLayout(new GridLayout());
 
         //日期
-        lblTime.setText("民國"+school.getYear()+"年"+school.getMonth()+"月"+school.getDate()+"日 星期"+school.getDay());
+        lblTime.setText(school.getTime());
         lblTime.setFont(new Font("Dialog", Font.BOLD, 16));
         pnlDate.add(lblTime);
         pnlNE1.add(pnlDate);
@@ -191,7 +193,7 @@ public class Main extends Frame {
         lblSearch.setFont(new Font("Dialog", Font.BOLD, 16));
         btnHistory.setFont(new Font("Dialog", Font.BOLD, 16));
         btnClass.setFont(new Font("Dialog", Font.BOLD, 16));
-        btnScore.setFont(new Font("Dialog", Font.BOLD, 16));
+//        btnClass.setFont(new Font("Dialog", Font.BOLD, 16));
         btnTimeTable.setFont(new Font("Dialog", Font.BOLD, 16));
 
         pnlFunction.setLayout(new FlowLayout());
@@ -199,7 +201,7 @@ public class Main extends Frame {
         pnlFunction.add(lblSearch);
         pnlFunction.add(btnHistory);
         pnlFunction.add(btnClass);
-        pnlFunction.add(btnScore);
+//        pnlFunction.add(btnClass);
         pnlFunction.add(btnTimeTable);
         pnlNE.add(pnlFunction);
 
@@ -210,8 +212,8 @@ public class Main extends Frame {
         pnlCenter.setLayout(card);
 
         //班級介面
-        pnlCenter.add(pnlClass,"class");
-        pnlClass.add(new LabelNotDone());
+//        pnlCenter.add(pnlClass,"class");
+//        pnlClass.add(new LabelNotDone());
 
         //歷史紀錄介面
         pnlCenter.add(pnlHistory,"history");
@@ -229,7 +231,7 @@ public class Main extends Frame {
         pnlTimeTable.add(new JLabel(""));
         JLabel[] num=new JLabel[9];
         for(int j=1;j<=7;j++) {
-            String str = new String();
+            String str = "";
             switch (j){
                 case 7->{str="星期日";}
                 case 1->{str="星期一";}
@@ -249,9 +251,9 @@ public class Main extends Frame {
             num[i].setFont(new Font( "Dialog",Font.BOLD,20));
             pnlTimeTable.add(num[i]);
             for(int j=0; j<7; j++) {
-                JTextField txt = new JTextField("" );
-                txt.setFont(new Font("Dialog",Font.BOLD,20));
-                pnlTimeTable.add(txt);
+                timeTablet[j][i] = new JTextField(school.getTablet(j, i));
+                timeTablet[j][i].setFont(new Font("Dialog",Font.BOLD,20));
+                pnlTimeTable.add(timeTablet[j][i]);
             }
         }
 
@@ -318,6 +320,7 @@ public class Main extends Frame {
         FlowLayout flowLayout1 = new FlowLayout();
         flowLayout1.setAlignment(FlowLayout.LEFT);
         pnlSouth1.setLayout(flowLayout1);
+        btnSetting.setFont(new Font("Dialog", Font.BOLD, 16));
         pnlSouth1.add(btnSetting);
         pnlSouth.add(pnlSouth1);
         FlowLayout flowLayout = new FlowLayout();
@@ -331,11 +334,22 @@ public class Main extends Frame {
         pnlSouth2.add(btnNext);
         pnlSouth.add(pnlSouth2);
 
+//        JPasswordField pass = new JPasswordField(10);
+//        pnlSouth2.add(pass);
+//        JButton btn = new JButton("OK");
+//        btn.addActionListener(new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                System.out.println(String.valueOf(pass.getPassword()));
+//            }
+//        });
+//        pnlSouth2.add(btn);
+
         //按紐
         btnHome.addActionListener(new action());
         btnClass.addActionListener(new action());
         btnHistory.addActionListener(new action());
-        btnScore.addActionListener(new action());
+//        btnClass.addActionListener(new action());
         btnTimeTable.addActionListener(new action());
         btnBack.addActionListener(new action());
         btnNext.addActionListener(new action());
@@ -343,6 +357,7 @@ public class Main extends Frame {
         btnOK.addActionListener(new action());
 
         //初始化
+        current = "weekend";
         click(current);
 
     }
@@ -384,11 +399,26 @@ public class Main extends Frame {
         for (int i=0; i<school.getBallKinds(); i++) {
             ArrayList<String> temp = new ArrayList<>();
             for (int j=0; j<school.getBall(i).getCourtNum(); j++) {
+                again:
+
                 if (school.turn()) {
-                    temp.add(school.getSenior()[school.getSeniorTurn()].getName());
+                    int n = school.getSeniorTurn();
+                    if (school.getSenior()[n].isBanned()) {
+                        j--;
+                        break again;
+                    } else
+                        temp.add(school.getSenior()[n].getName());
                 } else {
-                    temp.add(school.getJunior()[school.getJuniorTurn()].getName());
+                    int n = school.getJuniorTurn();
+                    if (school.getJunior()[n].isBanned()) {
+                        j--;
+                        break again;
+                    } else {
+                        temp.add(school.getJunior()[n].getName());
+                    }
                 }
+
+//                System.out.println(temp.size());
                 court.put(school.getBall(i).getName(), temp);
             }
         }
@@ -417,15 +447,13 @@ public class Main extends Frame {
     }
 
     void resetScore() {
-        pnlScore.removeAll();
+        pnlClass.removeAll();
 
-        pnlCenter.add(pnlScore,"score");
-//        pnlScore.add(new LabelNotDone());
+        pnlCenter.add(pnlClass,"class");
+//        pnlClass.add(new LabelNotDone());
 
         ArrayList<String> cList = new ArrayList<>();
-        ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
-        ArrayList<String> gList = new ArrayList<String>();
-        ArrayList<String> bList = new ArrayList<String>();
+        ArrayList<ArrayList<String>> list = new ArrayList<>();
         cList.add("班級");
         for (int i=0; i<school.getClassNum(); i++) {
             cList.add(school.getClass(i).getName());
@@ -434,17 +462,26 @@ public class Main extends Frame {
 //        for (String s1 : s)
 //            System.out.println(s1);
 
+        ArrayList<String> gList = new ArrayList<String>();
         gList.add("優良點數");
         for (int i=0; i<school.getClassNum(); i++) {
             gList.add(String.valueOf(school.getClass(i).getGoodPoint()));
         }
         list.add(gList);
 
+        ArrayList<String> bList = new ArrayList<String>();
         bList.add("違規點數");
         for (int i=0; i<school.getClassNum(); i++) {
             bList.add(String.valueOf(school.getClass(i).getBadPoint()));
         }
         list.add(bList);
+
+        ArrayList<String> banList = new ArrayList<String>();
+        banList.add("禁球狀態");
+        for (int i=0; i<school.getClassNum(); i++) {
+            banList.add(school.getClass(i).isBanned()? "禁球至"+school.getDate(school.getClass(i).getBanTime()) : "開放借球" );
+        }
+        list.add(banList);
 
         String[][] ss = new String[list.size()][];
         for (int i=0; i<list.size(); i++) {
@@ -468,17 +505,16 @@ public class Main extends Frame {
         for (int i=0; i<school.getClassNum(); i++)
             table.setValueAt(String.valueOf(school.getClass(i).getBadPoint()),1,i+1);
 
-
         JScrollPane scrollPane=new JScrollPane(table);
         JPanel[] pan=new JPanel[2];
         JButton[][] bb = new JButton[2][school.getClassNum()];
 
-        pnlScore.setLayout(new GridLayout(2,1,0,10));
+        pnlClass.setLayout(new GridLayout(2,1,0,10));
         // JLabel[] pnlFst=new JLabel[12];
         for(int i=0;i<2;i++)
         {
             pac[i]=new JPanel();
-            pnlScore.add(pac[i]);
+            pnlClass.add(pac[i]);
             pac[i].setLayout(new GridLayout(i+1,school.getClassNum()+1,10,0));
             //pnlFst[i]=new JLabel("       "+juniorData[i][0]);
             // pnlFst[i+6]=new JLabel("       "+seniorData[i][0]);
@@ -541,7 +577,7 @@ public class Main extends Frame {
         pnlSetClass = new JPanel();
         pnlSetBall = new JPanel();
         pnlSetting.add(pnlSetClass);
-        pnlSetClass.setLayout(new GridLayout(5,school.getClassNum()+1, 5, 25));
+        pnlSetClass.setLayout(new GridLayout(6,school.getClassNum()+1, 5, 25));
         pnlSetting.add(pnlSetBall);
         pnlSetBall.setLayout(new GridLayout(6, school.getBallKinds()+1, 50, 15));
 
@@ -549,6 +585,7 @@ public class Main extends Frame {
         gPointField = new JTextField[school.getClassNum()];
         bPointField = new JTextField[school.getClassNum()];
         banField = new JTextField[school.getClassNum()];
+        btnUnban = new JButton[school.getClassNum()];
         btnRemoveClass = new JButton[school.getClassNum()];
         btnRemoveBall = new JButton[school.getBallKinds()];
 
@@ -559,8 +596,10 @@ public class Main extends Frame {
         gPointTitle.setFont(new Font("Dialog", Font.BOLD, 16));
         JLabel bPointTitle=new JLabel("違規點數", JLabel.CENTER);
         bPointTitle.setFont(new Font("Dialog", Font.BOLD, 16));
-        JLabel banTitle=new JLabel("是否禁球", JLabel.CENTER);
+        JLabel banTitle=new JLabel("禁球狀態", JLabel.CENTER);
         banTitle.setFont(new Font("Dialog", Font.BOLD, 16));
+        JLabel unbanTitle = new JLabel("禁 / 解禁", JLabel.CENTER);
+        unbanTitle.setFont(new Font("Dialog", Font.BOLD, 16));
         JButton btnAddClass=new JButton("新增班級");
         btnAddClass.setFont(new Font("Dialog", Font.BOLD, 16));
         JLabel ballNameTitle=new JLabel("球類名稱", JLabel.CENTER);
@@ -603,6 +642,42 @@ public class Main extends Frame {
             banField[i].setFont(new Font("Dialog", Font.BOLD, 16));
             banField[i].setEditable(false);
             pnlSetClass.add(banField[i]);
+        }
+        pnlSetClass.add(unbanTitle);
+        for(int i=0;i<school.getClassNum();i++)
+        {
+            String str;
+            btnUnban[i]=new JButton(school.getClass(i).isBanned()? "解除禁球" : "禁球" );
+            btnUnban[i].setFont(new Font("Dialog", Font.BOLD, 16));
+            int finalI = i;
+            btnUnban[i].addActionListener(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (school.getClass(finalI).isBanned()){
+                        int option = JOptionPane.showConfirmDialog(null,
+                                "確定要解除 "+ school.getClass(finalI).getName() +" 的禁球狀態嗎?",
+                                "確認通知",
+                                JOptionPane.YES_OPTION
+                        );
+
+                        if(option == JOptionPane.YES_OPTION) {
+                            school.getClass(finalI).unban();
+                        }
+                    } else {
+                        int option = JOptionPane.showConfirmDialog(null,
+                                "確定要將 " + school.getClass(finalI).getName() + " 禁球嗎?",
+                                "確認通知",
+                                JOptionPane.YES_OPTION
+                        );
+
+                        if (option == JOptionPane.YES_OPTION) {
+                            school.getClass(finalI).ban(7);
+                        }
+                    }
+                    resetSetting();
+                }
+            });
+            pnlSetClass.add(btnUnban[i]);
         }
         //新增班級按紐
         btnAddClass.addActionListener(new AbstractAction() {
@@ -785,12 +860,15 @@ public class Main extends Frame {
             String s2 = "";
             while ((s2 = reader.readLine()) != null) s1 += s2;
             reader.close();
+            current = "weekend";
 
             school = new Gson().fromJson(s1, School.class);
 //            school = new Gson().fromJson(new FileReader(f), School.class);
         } else{//第一次登入
 //            new Gson().toJson(new School(), new FileWriter(f));
             school=new School();
+            String pass = JOptionPane.showInputDialog(null, "這是您第一次登入，請設定管理員密碼 :", JOptionPane.PLAIN_MESSAGE);
+            school.setPassword(pass);
             saveFile();
             current = "setting";
         }
@@ -807,7 +885,7 @@ public class Main extends Frame {
     public void resetButton () {
         btnNext.setEnabled(!next.empty());
         btnBack.setEnabled(!previous.empty());
-        btnOK.setEnabled(Objects.equals(current, "weekend") || Objects.equals(current, "setting"));
+        btnOK.setEnabled(Objects.equals(current, "weekend") || Objects.equals(current, "setting") || current == "timeTable");
 //        showStack();//用以顯示堆積結果
     }
 
@@ -844,15 +922,14 @@ public class Main extends Frame {
 
         for (int i=0; i<school.getBallKinds();i++) {
             for (int j=0; j<school.getBall(i).getCourtNum(); j++) {
+//                System.out.println("i = "+i+", j = "+j+", ballName = "+school.getBall(i).getName());
                 String cls = school.getHisCourt(school.getBall(i).getName(),j);
                 int grade = school.getClass(cls).isJunior() ? 1:0;
+                JLabel lbl  = new JLabel(school.getBall(i).getName()+String.valueOf(j+1));
+                lbl.setFont(new Font("Dialog",Font.BOLD,25));
                 if (grade == 0) {
-                    JLabel lbl  = new JLabel(school.getBall(i).getName()+String.valueOf(j+1));
-                    lbl.setFont(new Font("Dialog",Font.BOLD,25));
                     pnl[grade][school.getSeniorIndex(cls)].add(lbl);
                 } else {
-                    JLabel lbl = new JLabel(school.getBall(i).getName()+String.valueOf(j+1));
-                    lbl.setFont(new Font("Dialog",Font.BOLD,25));
                     pnl[grade][school.getJuniorIndex(cls)].add(lbl);
                 }
             }
@@ -908,6 +985,19 @@ public class Main extends Frame {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
+    private void updateTable() {
+        for (int i=0; i<7; i++) {
+            for (int j=0; j<9; j++) {
+                school.updateTablet( i, j, timeTablet[i][j].getText());
+            }
+        }
+
+        JOptionPane.showMessageDialog(null,
+                "資料已更新，上傳至資料庫",
+                "溫馨小通知",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
     void click(String str) {
         previous.push(current);
         current = str;
@@ -933,6 +1023,19 @@ public class Main extends Frame {
                         click("weekendResult");
                     } else if(current.equals("setting")) {
                         updateSetting();
+                        resetSetting();
+                    } else if (current.equals("timeTable")) {
+                        int option = JOptionPane.showConfirmDialog(null,
+                            "確定要更新資料嗎? 舊資料將被覆蓋哦!",
+                            "溫馨小提醒",
+                            JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.WARNING_MESSAGE
+                        );
+
+                        if (option == JOptionPane.YES_OPTION)
+                            updateTable();
+
+                        resetTime();
                     }
                 } else if(e.getSource()==btnBack){
                     next.push(current);
@@ -947,24 +1050,49 @@ public class Main extends Frame {
                     lblTitle.setText(getTitle(current));
                     resetButton();
                 } else if(e.getSource()==btnClass){
+                    resetScore();
                     click("class");
                 } else if(e.getSource()==btnHistory){
                     click("history");
-                } else if(e.getSource()==btnScore){
-                    resetScore();
-                    click("score");
+//                } else if(e.getSource()==btnClass){
+//                    click("score");
                 } else if(e.getSource()==btnSetting){
-                    resetSetting();
-                    click("setting");
+                    JPasswordField passwd = new JPasswordField();
+                    JOptionPane localJOptionPane = new JOptionPane(
+                            "請輸入管理員密碼 : ",
+                            JOptionPane.QUESTION_MESSAGE);
+                    localJOptionPane.add(passwd);
+                    passwd.setEchoChar('*');
+                    JDialog localJDialog = localJOptionPane.createDialog(localJOptionPane,
+                            "管理員密碼");
+                    localJDialog.setVisible(true);
+                    String input = "";
+                    input = String.valueOf(passwd.getPassword());
+//                    System.out.println(passwd.getPassword());
+//                    localJDialog.dispose();
+
+                    if (school.checkPassword(input)) {
+                        resetSetting();
+                        click("setting");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "密碼錯誤", "錯誤錯誤", JOptionPane.ERROR_MESSAGE);
+                    }
                 } else if(e.getSource()==btnTimeTable){
                     click("timeTable");
-//            } else if() {
-//
                 } else {
                     throw new IllegalStateException("Unexpected value: " + e.getSource());
                 }
             }
 
+        }
+
+    }
+
+    private void resetTime() {
+        for (int i=0; i<7; i++) {
+            for (int j=0; j<9; j++) {
+                timeTablet[i][j].setText(school.getTablet(i, j));
+            }
         }
     }
 

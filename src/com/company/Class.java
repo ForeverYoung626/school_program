@@ -9,7 +9,7 @@ public class Class {
     private boolean banned;
     private int count;
 
-    private Calendar banTime = null;
+    private Calendar banTime;
 
     Class (String name) {
 
@@ -21,18 +21,39 @@ public class Class {
         badPoint = bPoint;
         banned = false;
         this.count = 0;
+//        banTime = null;
     }
 
-    public void add(int num) {}
-    public void sub(int num) {}
-    public void ban(int day) {}
-    public void unban() {}
-    public void unban(int day) {}
-    public void delay(int day) {}
-    public void count() { count++; }
-    public void clearCount() { count=0; }
-    public  void addGoodPoint(){goodPoint++;}
-    public  void addBadPoint(){badPoint++;}
+//    public void add(int num) {}
+//    public void sub(int num) {}
+    public void ban(int day) {
+        if (banTime == null) {
+            banTime = Calendar.getInstance();
+            banTime.add(Calendar.DATE, day);
+            banned = true;
+        } else {
+            banTime.add(Calendar.DATE, day);
+        }
+    }
+    public void unban() {
+        this.banned = false;
+        banTime = null;
+    }
+//    public void unban(int day) {}
+//    public void delay(int day) {}
+//    public void count() { count++; }
+//    public void clearCount() { count=0; }
+    public  void addGoodPoint(){
+        goodPoint++;
+
+    }
+    public  void addBadPoint(){
+        badPoint++;
+        if (badPoint >= 3) {
+            badPoint -= 3;
+            this.ban(7);
+        }
+    }
     public void balance() {//優缺抵消
         goodPoint = Math.max(goodPoint - badPoint, 0);
         badPoint = Math.max(badPoint - goodPoint, 0);
@@ -40,10 +61,15 @@ public class Class {
 
     public void setBadPoint(int badPoint) {
         this.badPoint = badPoint;
+        if (this.badPoint >= 3) {
+            this.ban(badPoint/3*7);
+            this.badPoint %= 3;
+        }
     }
 
     public void setGoodPoint(int goodPoint) {
         this.goodPoint = goodPoint;
+//        if (this.goodPoint>=)
     }
 
     public void setClassName(String className) {
@@ -56,12 +82,6 @@ public class Class {
     }
     public boolean isBanned()
     {
-//        if (!banTime.after(Calendar.getInstance()) || banTime == null) {
-//            banned = false;
-//        } else {
-//            banned = true;
-//        }
-
         return banned;
     }
     public int getGoodPoint() {
@@ -73,7 +93,7 @@ public class Class {
     public String getBanned() {
         if (isBanned())
             return "禁球中";
-        return "正常借球";
+        return "開放借球";
     }
     public boolean isSenior() {
         return this.className.contains("高");

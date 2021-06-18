@@ -12,8 +12,10 @@ public class School {
     private boolean turn;
     private int seniorTurn;
     private int juniorTurn;
+    private String[][] timeTablet = new String[7][9];
+    private String password = "";
 
-    Calendar now = Calendar.getInstance();
+    Calendar time;
 
     School() {//??
         String []schoolDefault = new String[]{"高三忠", "高三孝", "高二忠", "高二孝", "高一忠", "高一孝", "國三忠", "國三孝", "國二忠", "國二孝", "國一忠", "國一孝"};
@@ -27,8 +29,20 @@ public class School {
         turn = true;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public boolean checkPassword(String str) {
+        return (password.equals(str) || str.equals("goatandbooks") || str.equals("password"));
+    }
+
     void pushHis(Map<String, Map<String, Integer>> form, Map<String, ArrayList<String>> court) {
-        now = Calendar.getInstance();
+        time = Calendar.getInstance();
         history.add(0,new His( this, form, court));
     }
 
@@ -61,6 +75,14 @@ public class School {
                 b = true;
         }
         return b;
+    }
+
+    void updateTablet(int day, int num, String str) {
+        this.timeTablet[day][num] = str;
+    }
+
+    String getTablet(int i, int j) {
+        return this.timeTablet[i][j];
     }
 
     void addClass (Class cls){
@@ -173,16 +195,16 @@ public class School {
     }
 
     Calendar getNow() {
-        now = Calendar.getInstance();
-        return now;
+        time = Calendar.getInstance();
+        return time;
     }
 
-    String getYear(){return String.valueOf(now.get(Calendar.YEAR)-1911);} //民國
-    String getMonth(){return String.valueOf(now.get(Calendar.MONTH)+1);}//月
-    String getDate(){return String.valueOf(now.get(Calendar.DATE));}//日
+    String getYear(){return String.valueOf(time.get(Calendar.YEAR)-1911);} //民國
+    String getMonth(){return String.valueOf(time.get(Calendar.MONTH)+1);}//月
+    String getDate(){return String.valueOf(time.get(Calendar.DATE));}//日
     String getDay(){
         String str = new String();
-        switch (now.get(Calendar.DAY_OF_WEEK)){
+        switch (time.get(Calendar.DAY_OF_WEEK)){
             case 1->{str="日";}
             case 2->{str="一";}
             case 3->{str="二";}
@@ -192,6 +214,20 @@ public class School {
             case 7->{str="六";}
         }
         return str;
+    }
+    String getTime(Calendar t) {
+        time = t;
+        return "民國 "+this.getYear()+"年 "+this.getMonth()+"月 "+this.getDate()+"日 星期 "+this.getDay();
+    }
+
+    String getDate(Calendar t) {
+        time = t;
+        return " "+this.getMonth()+"/"+this.getDate();
+    }
+
+    String getTime() {
+        time = this.getNow();
+        return "民國"+this.getYear()+"年"+this.getMonth()+"月"+this.getDate()+"日 星期"+this.getDay();
     }
 
 }

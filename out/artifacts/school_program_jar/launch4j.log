@@ -1,0 +1,25 @@
+
+
+Version:	3.14
+CmdLine:	E:\Program\Java\school_program\out\artifacts\school_program_jar\school_program.exe --l4j-debug
+WOW64:		yes
+Working dir:	E:\Program\Java\school_program\out\artifacts\school_program_jar\.
+Java min ver:	1.005.000
+Java max ver:	
+64-bit search:	SOFTWARE\JavaSoft\Java Runtime Environment...
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8
+Check launcher:	C:\Program Files\Java\jre1.8.0_291\bin\javaw.exe (OK)
+Match:		1.008.000
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8.0_291
+Check launcher:	C:\Program Files\Java\jre1.8.0_291\bin\javaw.exe (OK)
+Match:		1.008.000_291
+64-bit search:	SOFTWARE\JavaSoft\Java Development Kit...
+64-bit search:	SOFTWARE\JavaSoft\JRE...
+64-bit search:	SOFTWARE\JavaSoft\JDK...
+Runtime used:	1.008.000_291 (64-bit)
+Main class:	com.company.Main
+Info:		Classpath not defined.
+Launcher:	C:\Program Files\Java\jre1.8.0_291\bin\javaw.exe
+Launcher args:	-classpath "E:\Program\Java\school_program\out\artifacts\school_program_jar\school_program.exe" com.company.Main
+Args length:	112/32768 chars
+Exit code:	0

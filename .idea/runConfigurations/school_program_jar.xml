@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="school_program.jar" type="JarApplication" singleton="false">
+    <option name="JAR_PATH" value="$PROJECT_DIR$/out/artifacts/school_program_jar/school_program.jar" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="ALTERNATIVE_JRE_PATH" value="$USER_HOME$/.jdks/openjdk-16.0.1" />
+    <module name="school_program" />
+    <method v="2" />
+  </configuration>
+</component>

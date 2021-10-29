@@ -27,6 +27,9 @@ public class Main extends Frame {
     CardLayout card = new CardLayout();
     String current;
 
+    String searchMonth;
+    String searchDay;
+
     //位置樣板
     JPanel pnlMenu = new JPanel();
     JPanel pnlNorth = new JPanel();
@@ -36,20 +39,11 @@ public class Main extends Frame {
     JPanel pnlDate = new JPanel();
     JPanel pnlFunction = new JPanel();
     JPanel pnlCenter = new JPanel();
-//    JPanel pnlClass = new JPanel();
+    //    JPanel pnlClass = new JPanel();
     JPanel pnlSouth = new JPanel();
     JPanel pnlSouth1 = new JPanel();
     JPanel pnlSouth2 = new JPanel();
-    //    JPanel pnlSen31 = new JPanel();
-    //    JPanel pnlSen21 = new JPanel();
-    //    JPanel pnlSen22 = new JPanel();
-    //    JPanel pnlSen11 = new JPanel();
-    //    JPanel pnlSen12 = new JPanel();
-    //    JPanel pnlJun31 = new JPanel();
-    //    JPanel pnlJun21 = new JPanel();
-    //    JPanel pnlJun22 = new JPanel();
-    //    JPanel pnlJun11 = new JPanel();
-    //    JPanel pnlJun12 = new JPanel();
+
     //內容樣板
     JPanel pnlInti = new JPanel();//初始設定（第一次使用）
     JPanel pnlSenior = new JPanel();
@@ -74,14 +68,20 @@ public class Main extends Frame {
     JButton btnHome = new JButton("主頁面");
     JButton btnHistory = new JButton("歷史紀錄");
     JButton btnClass = new JButton("班級");
-//    JButton btnClass = new JButton("點數");
+    //    JButton btnClass = new JButton("點數");
     JButton btnTimeTable = new JButton("時間表");
     JButton btnSetting = new JButton("設定");
     JButton btnOK = new JButton("確定");
     JButton btnBack = new JButton("返回");
     JButton btnNext =new JButton("下一頁");
+    JButton btnAnnuallyUpdate = new JButton("自動更新新學年");
+    JButton btnHisSearch = new  JButton("搜尋");
+    JButton btnHisBack = new JButton("上一次");
+    JButton btnHisNext = new JButton("下一次");
     JButton[] btnRemoveClass;
     JButton[] btnRemoveBall;
+
+
 
     JTextField[] classField;
     JTextField[] gPointField;
@@ -132,6 +132,15 @@ public class Main extends Frame {
 
     JTable table;
 
+    String[] stringHisYear={"前年","去年","今年"};
+    String[] stringHisMon={"1","2","3","4","5","6","7","8","9","10","11","12"};
+    String[] stringsHisDay={"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"};
+    JComboBox boxHisYear = new JComboBox(stringHisYear);
+    JComboBox boxHisMon = new JComboBox(stringHisMon);
+    JComboBox boxHisDay = new JComboBox(stringsHisDay);
+
+    Color themeColor = Color.cyan;
+
     Main() throws FileNotFoundException {
         //建立系統
         try {
@@ -154,37 +163,41 @@ public class Main extends Frame {
 //        pnlMenu.setLayout(layMenu);
         pnlMenu.setLayout(new BorderLayout());
 //        pnlMenu.setSize(1400,800);
-//        pnlMenu.setOpaque(true);
-//        pnlMenu.setBackground(Color.YELLOW);
+        pnlMenu.setOpaque(true);
+        pnlMenu.setBackground(themeColor);
 
         //上半
         pnlMenu.add(pnlNorth,BorderLayout.NORTH);
         pnlNorth.setAlignmentY(40);
         pnlNorth.setLayout(new GridLayout());
-//        pnlNorth.setOpaque(true);
-//        pnlNorth.setBackground(Color.YELLOW);
+        pnlNorth.setOpaque(false);
+//        pnlNorth.setBackground(themeColor);
 
-//        lblTitle.setBackground(Color.BLACK);
         pnlNorth.add(pnlNW);
         pnlNW.setLayout(new FlowLayout());
-//        pnlNW.setOpaque(true);
-//        pnlNW.setBackground(Color.YELLOW);
+        pnlNW.setOpaque(true);
+        pnlNW.setBackground(themeColor);
         pnlNW.add(lblTitle);
-        lblTitle.setOpaque(true);
-        lblTitle.setBackground(Color.cyan);
+        pnlNW.setOpaque(true);
+        pnlNW.setBackground(themeColor);
+        lblTitle.setOpaque(false);
+        lblTitle.setBackground(themeColor);
         lblTitle.setFont(new Font("Dialog",Font.BOLD,55));
         pnlNorth.add(pnlNE);
         pnlNE.setLayout(new GridLayout(2,1));
-//        pnlNE.setOpaque(true);
-//        pnlNE.setBackground(Color.YELLOW);
+        pnlNE.setOpaque(true);
+        pnlNE.setBackground(themeColor);
         pnlNE.add(pnlNE1);
-//        pnlNE1.setOpaque(true);
-//        pnlNE1.setBackground(Color.YELLOW);
+        pnlNE1.setOpaque(true);
+        pnlNE1.setBackground(themeColor);
         pnlNE1.setLayout(new GridLayout());
+        pnlNE1.setOpaque(false);
 
         //日期
+        lblTime.setOpaque(false);
         lblTime.setText(school.getTime());
         lblTime.setFont(new Font("Dialog", Font.BOLD, 16));
+        pnlDate.setOpaque(false);
         pnlDate.add(lblTime);
         pnlNE1.add(pnlDate);
 
@@ -197,6 +210,8 @@ public class Main extends Frame {
         btnTimeTable.setFont(new Font("Dialog", Font.BOLD, 16));
 
         pnlFunction.setLayout(new FlowLayout());
+        pnlFunction.setOpaque(false);
+//        pnlFunction.setBackground(themeColor);
         pnlFunction.add(btnHome);
         pnlFunction.add(lblSearch);
         pnlFunction.add(btnHistory);
@@ -210,6 +225,8 @@ public class Main extends Frame {
         pnlMenu.add(pnlCenter,BorderLayout.CENTER);
 //        pnlCenter.setLayout(new GridLayout());
         pnlCenter.setLayout(card);
+        pnlCenter.setOpaque(true);
+        pnlCenter.setBackground(themeColor);
 
         //班級介面
 //        pnlCenter.add(pnlClass,"class");
@@ -217,17 +234,70 @@ public class Main extends Frame {
 
         //歷史紀錄介面
         pnlCenter.add(pnlHistory,"history");
-        pnlHistory.add(new LabelNotDone());
+        BorderLayout borderLayout = new BorderLayout();
+        pnlHistory.setLayout(borderLayout);
+        pnlHistory.setOpaque(false);
+        pnlHistory.setBackground(themeColor);
+        JPanel pnlHisUp = new JPanel();
+        searchDay = school.getDate();
+        searchMonth = school.getMonth();
+        pnlHisUp.setLayout(new GridLayout(1,2));
+        pnlHisUp.setOpaque(false);
+//        pnlHisUp.setBackground(themeColor);
+        JLabel labHisDays = new JLabel(searchMonth+ " 月 "+searchDay+" 日");
+        labHisDays.setFont(new Font("Dialog", Font.BOLD, 55));
+//        labHisDays.setHorizontalTextPosition(Label.CENTER);
+        JPanel pnlSearch = new JPanel();
+        pnlSearch.setLayout(new GridLayout(1,8));
+        pnlSearch.setOpaque(false);
+        pnlHistory.add(pnlHisUp, BorderLayout.NORTH);
+        pnlHisUp.add(labHisDays);
+        pnlHisUp.add(pnlSearch);
+        JLabel labHisMon = new JLabel("月");
+        JLabel labHisDay = new  JLabel("日");
+
+        pnlSearch.add(boxHisYear);
+        pnlSearch.add(boxHisMon);
+        pnlSearch.add(labHisMon);
+        pnlSearch.add(boxHisDay);
+        pnlSearch.add(labHisDay);
+        pnlSearch.add(btnHisSearch);
+        pnlSearch.add(btnHisBack);
+        pnlSearch.add(btnHisNext);
+
+        //歷史記錄下半面
+        JPanel pnlHisDown = new JPanel();
+        pnlHisDown.setLayout(new GridLayout(school.getClassNum()/2,4));
+        pnlHisDown.setOpaque(false);
+        JLabel[][] labHisResult = new JLabel[school.getClassNum()/2][4];
+        for (int i=0;i<school.getClassNum()/2;i++){
+            labHisResult[i][0] = new JLabel(school.getClass(i).getName());
+            labHisResult[i][1] = new JLabel(""+"");
+            labHisResult[i][2] = new JLabel(school.getClass(i+1).getName());
+            labHisResult[i][3] = new JLabel(""+"");
+            labHisResult[i][0].setFont(new Font("微軟正黑體",Font.BOLD,50));
+            labHisResult[i][1].setFont(new Font("微軟正黑體",Font.BOLD,50));
+            labHisResult[i][2].setFont(new Font("微軟正黑體",Font.BOLD,50));
+            labHisResult[i][3].setFont(new Font("微軟正黑體",Font.BOLD,50));
+            pnlHisDown.add(labHisResult[i][0]);
+            pnlHisDown.add(labHisResult[i][1]);
+            pnlHisDown.add(labHisResult[i][2]);
+            pnlHisDown.add(labHisResult[i][3]);
+
+        }
+        pnlHistory.add(pnlHisDown);
+
 
         //點數介面
 
         //設定介面
         resetSetting();
 
-       //時間表界面
+        //時間表界面
         pnlCenter.add(pnlTimeTable,"timeTable");
         //pnlTimeTable.add(new LabelNotDone());
         pnlTimeTable.setLayout(new GridLayout(10,8, 5, 10));
+        pnlTimeTable.setOpaque(false);
         pnlTimeTable.add(new JLabel(""));
         JLabel[] num=new JLabel[9];
         for(int j=1;j<=7;j++) {
@@ -266,6 +336,7 @@ public class Main extends Frame {
         //周末借球填寫順序介面
         pnlCenter.add(pnlWeekend,"weekend");
         pnlWeekend.setLayout(new GridLayout(2,1));
+        pnlWeekend.setOpaque(true);
         pnlWeekend.add(pnlSenior);
         pnlWeekend.add(pnlJunior);
 
@@ -281,7 +352,10 @@ public class Main extends Frame {
                 sSenior[i][j] = String.valueOf(j);
         }
         tabSenior = new JTable( sSenior, ballName);
+        tabSenior.setOpaque(true);
+        tabSenior.setBackground(themeColor);
         scrollPane1 = new JScrollPane(tabSenior);
+        scrollPane1.setOpaque(true);
         pnlSenior.add(scrollPane1);
 
         String[][] sJunior = new String[school.getJunior().length][4];
@@ -291,10 +365,14 @@ public class Main extends Frame {
                 sJunior[i][j] = String.valueOf(j);
         }
         tabJunior = new JTable( sJunior, ballName);
+        tabJunior.setOpaque(true);
+        tabJunior.setBackground(themeColor);
         scrollPane2 = new JScrollPane(tabJunior);
+        scrollPane2.setOpaque(true);
         pnlJunior.add(scrollPane2);
 
         pnlSenior.setLayout(new GridLayout());
+        pnlSenior.setOpaque(true);
         tabSenior.getTableHeader().setReorderingAllowed(false);
         tabSenior.setUpdateSelectionOnSort(false);
         tabSenior.setFont(new Font("Dialog", Font.BOLD, 16));
@@ -303,9 +381,11 @@ public class Main extends Frame {
         tabSenior.getTableHeader().setFont(new Font("Dialog", Font.BOLD, 16));
 
         pnlJunior.setLayout(new GridLayout());
+        pnlJunior.setOpaque(true);
         tabJunior.getTableHeader().setReorderingAllowed(false);
         tabJunior.setUpdateSelectionOnSort(false);
         tabJunior.setFont(new Font("Dialog", Font.BOLD, 16));
+        tabJunior.setOpaque(true);
         tabJunior.setRowMargin(10);
         tabJunior.setRowHeight(40);
         tabJunior.getTableHeader().setFont(new Font("Dialog", Font.BOLD, 16));
@@ -317,15 +397,18 @@ public class Main extends Frame {
         //下半
         pnlMenu.add(pnlSouth,BorderLayout.SOUTH);
         pnlSouth.setLayout(new GridLayout());
+        pnlSouth.setOpaque(false);
         FlowLayout flowLayout1 = new FlowLayout();
         flowLayout1.setAlignment(FlowLayout.LEFT);
         pnlSouth1.setLayout(flowLayout1);
+        pnlSouth1.setOpaque(false);
         btnSetting.setFont(new Font("Dialog", Font.BOLD, 16));
         pnlSouth1.add(btnSetting);
         pnlSouth.add(pnlSouth1);
         FlowLayout flowLayout = new FlowLayout();
         flowLayout.setAlignment(FlowLayout.RIGHT);
         pnlSouth2.setLayout(flowLayout);
+        pnlSouth2.setOpaque(false);
         btnOK.setFont(new Font("Dialog", Font.BOLD, 16));
         btnBack.setFont(new Font("Dialog", Font.BOLD, 16));
         btnNext.setFont(new Font("Dialog", Font.BOLD, 16));
@@ -384,15 +467,12 @@ public class Main extends Frame {
         frame.setVisible(true);
     }
 
-    Map<String, ArrayList<String>> distribute(Map<String, Map<String, Integer>> form) {
-        Map<String, ArrayList<String>> court = new HashMap<>();
+    Map<String, ArrayList<String>> distribute(Map<String, Map<String, Integer>> form) {// form 的型態為 <班級名稱 <球類名稱, 填選志願>>
+        Map<String, ArrayList<String>> court = new HashMap<>(); // court 的型態為 <球類名稱, 班級[]>
 
-        //example
-//        for (int i=0; i<school.getBallKinds(); i++) {
-//            ArrayList<String> temp = new ArrayList<>();
-//            for (int j=0; j<school.getBall(i).getCourtNum(); j++)
-//                temp.add(school.getClass(i).getName());
-//            court.put(school.getBall(i).getName(), temp);
+        ArrayList<String> line = new ArrayList<String>(); // 儲存填寫志願順序相同的班級
+//        for( Object s : form.keySet()) {
+//            if ()
 //        }
 
         //OP 分類
@@ -401,14 +481,14 @@ public class Main extends Frame {
             for (int j=0; j<school.getBall(i).getCourtNum(); j++) {
                 again:
 
-                if (school.turn()) {
+                if (school.turn()) { //輪到高中
                     int n = school.getSeniorTurn();
                     if (school.getSenior()[n].isBanned()) {
                         j--;
                         break again;
-                    } else
+                    } else if (form.get(school.getSenior()[n]).get(school.getBall(i).getName()) == 1)
                         temp.add(school.getSenior()[n].getName());
-                } else {
+                } else { //輪到國中
                     int n = school.getJuniorTurn();
                     if (school.getJunior()[n].isBanned()) {
                         j--;
@@ -427,15 +507,15 @@ public class Main extends Frame {
     }
 
     public void saveData() {
-        Map<String, Map<String, Integer>> form = new HashMap<>();
-        for (int i=0; i<school.getSenior().length; i++) {
+        Map<String, Map<String, Integer>> form = new HashMap<>(); // form 的型態為 <班級名稱 <球類名稱, 填選志願>>
+        for (int i=0; i<school.getSenior().length; i++) { // 將高中資料加入form
             Map<String, Integer> temp = new HashMap<>();
             for (int j=0; j<school.getBallKinds(); j++) {
                 temp.put(school.getBall(j).getName(), Integer.parseInt((String) tabSenior.getValueAt( i, j+1)));
             }
             form.put(school.getClass(i).getName(), temp);
         }
-        for (int i=0; i<school.getJunior().length; i++) {
+        for (int i=0; i<school.getJunior().length; i++) { // 將國中資料加入form
             Map<String, Integer> temp = new HashMap<>();
             for (int j=0; j<school.getBallKinds(); j++) {
                 temp.put(school.getBall(j).getName(), Integer.parseInt((String) tabJunior.getValueAt( i, j+1)));
@@ -510,16 +590,19 @@ public class Main extends Frame {
         JButton[][] bb = new JButton[2][school.getClassNum()];
 
         pnlClass.setLayout(new GridLayout(2,1,0,10));
+        pnlClass.setOpaque(false);
         // JLabel[] pnlFst=new JLabel[12];
         for(int i=0;i<2;i++)
         {
             pac[i]=new JPanel();
             pnlClass.add(pac[i]);
             pac[i].setLayout(new GridLayout(i+1,school.getClassNum()+1,10,0));
+            pac[i].setOpaque(false);
             //pnlFst[i]=new JLabel("       "+juniorData[i][0]);
             // pnlFst[i+6]=new JLabel("       "+seniorData[i][0]);
             pan[i]=new JPanel();
             pan[i].setLayout(new GridLayout(0,school.getClassNum()+1,0,10));
+            pan[i].setOpaque(false);
         }
         pac[0].add(scrollPane);
         pac[1].add(pan[0]);
@@ -574,12 +657,15 @@ public class Main extends Frame {
 
         pnlCenter.add(pnlSetting,"setting");
         pnlSetting.setLayout(new GridLayout(2,1,70,10));
+        pnlSetting.setOpaque(false);
         pnlSetClass = new JPanel();
         pnlSetBall = new JPanel();
         pnlSetting.add(pnlSetClass);
         pnlSetClass.setLayout(new GridLayout(6,school.getClassNum()+1, 5, 25));
+        pnlSetClass.setOpaque(false);
         pnlSetting.add(pnlSetBall);
         pnlSetBall.setLayout(new GridLayout(6, school.getBallKinds()+1, 50, 15));
+        pnlSetBall.setOpaque(false);
 
         classField = new JTextField[school.getClassNum()];
         gPointField = new JTextField[school.getClassNum()];
@@ -685,6 +771,8 @@ public class Main extends Frame {
             public void actionPerformed(ActionEvent e) {
                 JPanel pane  = new JPanel();
                 pane.setLayout(new GridLayout(0,2,2,2));
+                pane.setOpaque(true);
+                pane.setBackground(themeColor);
 
                 JTextField fieldName = new JTextField("高三忠");
                 JTextField fieldGood = new JTextField("0");
@@ -698,9 +786,9 @@ public class Main extends Frame {
                 pane.add(fieldBad);
 
                 int option = JOptionPane.showConfirmDialog(null,
-                                                pane,
-                                                "建立班級",
-                                                JOptionPane.YES_NO_OPTION);
+                        pane,
+                        "建立班級",
+                        JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
                     String name = fieldName.getText();
                     if (school.existClass(name)){
@@ -792,6 +880,8 @@ public class Main extends Frame {
             public void actionPerformed(ActionEvent e) {
                 JPanel pane  = new JPanel();
                 pane.setLayout(new GridLayout(0,2,2,2));
+                pane.setOpaque(true);
+                pane.setBackground(themeColor);
 
                 JTextField fieldName = new JTextField("籃球");
                 JTextField fieldCourt = new JTextField("2");
@@ -894,11 +984,13 @@ public class Main extends Frame {
 
         pnlCenter.add(pnlWeekendResult,"weekendResult");
         pnlWeekendResult.setLayout(new GridLayout(0,2));
+        pnlWeekendResult.setOpaque(false);
 
         pnl = new JPanel[2][Math.max(school.getSenior().length, school.getJunior().length)];
         for (int i=0; i<school.getSenior().length; i++) {
             pnl[0][i] = new JPanel();
             pnl[0][i].setLayout(new FlowLayout(FlowLayout.LEFT, 30, 0));
+            pnl[0][i].setOpaque(false);
             JLabel lbl = new JLabel(school.getSenior()[i].getName());
             lbl.setOpaque(true);
             lbl.setBackground(Color.BLACK);
@@ -911,6 +1003,7 @@ public class Main extends Frame {
         for (int i=0; i<school.getJunior().length; i++) {
             pnl[1][i] = new JPanel();
             pnl[1][i].setLayout(new FlowLayout(FlowLayout.LEFT, 30, 0));
+            pnl[1][i].setOpaque(false);
             JLabel lbl = new JLabel(school.getJunior()[i].getName());
             lbl.setOpaque(true);
             lbl.setBackground(Color.BLACK);
@@ -1026,10 +1119,10 @@ public class Main extends Frame {
                         resetSetting();
                     } else if (current.equals("timeTable")) {
                         int option = JOptionPane.showConfirmDialog(null,
-                            "確定要更新資料嗎? 舊資料將被覆蓋哦!",
-                            "溫馨小提醒",
-                            JOptionPane.OK_CANCEL_OPTION,
-                            JOptionPane.WARNING_MESSAGE
+                                "確定要更新資料嗎? 舊資料將被覆蓋哦!",
+                                "溫馨小提醒",
+                                JOptionPane.OK_CANCEL_OPTION,
+                                JOptionPane.WARNING_MESSAGE
                         );
 
                         if (option == JOptionPane.YES_OPTION)
@@ -1040,13 +1133,21 @@ public class Main extends Frame {
                 } else if(e.getSource()==btnBack){
                     next.push(current);
                     current = previous.pop();
-                    card.show(pnlCenter,current);
+                    if (current == "setting") {
+                        ClickSetting();
+                    } else {
+                        card.show(pnlCenter, current);
+                    }
                     lblTitle.setText(getTitle(current));
                     resetButton();
                 } else if (e.getSource()==btnNext) {
                     previous.push(current);
                     current = next.pop();
-                    card.show(pnlCenter,current);
+                    if (current == "setting") {
+                        ClickSetting();
+                    } else {
+                        card.show(pnlCenter, current);
+                    }
                     lblTitle.setText(getTitle(current));
                     resetButton();
                 } else if(e.getSource()==btnClass){
@@ -1057,31 +1158,36 @@ public class Main extends Frame {
 //                } else if(e.getSource()==btnClass){
 //                    click("score");
                 } else if(e.getSource()==btnSetting){
-                    JPasswordField passwd = new JPasswordField();
-                    JOptionPane localJOptionPane = new JOptionPane(
-                            "請輸入管理員密碼 : ",
-                            JOptionPane.QUESTION_MESSAGE);
-                    localJOptionPane.add(passwd);
-                    passwd.setEchoChar('*');
-                    JDialog localJDialog = localJOptionPane.createDialog(localJOptionPane,
-                            "管理員密碼");
-                    localJDialog.setVisible(true);
-                    String input = "";
-                    input = String.valueOf(passwd.getPassword());
-//                    System.out.println(passwd.getPassword());
-//                    localJDialog.dispose();
-
-                    if (school.checkPassword(input)) {
-                        resetSetting();
-                        click("setting");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "密碼錯誤", "錯誤錯誤", JOptionPane.ERROR_MESSAGE);
-                    }
+                    ClickSetting();
                 } else if(e.getSource()==btnTimeTable){
                     click("timeTable");
                 } else {
                     throw new IllegalStateException("Unexpected value: " + e.getSource());
                 }
+            }
+
+        }
+
+        private void ClickSetting() {
+            JPasswordField passwd = new JPasswordField();
+            JOptionPane localJOptionPane = new JOptionPane(
+                    "請輸入管理員密碼 : ",
+                    JOptionPane.QUESTION_MESSAGE);
+            localJOptionPane.add(passwd);
+            passwd.setEchoChar('*');
+            JDialog localJDialog = localJOptionPane.createDialog(localJOptionPane,
+                    "管理員密碼");
+            localJDialog.setVisible(true);
+            String input = "";
+            input = String.valueOf(passwd.getPassword());
+//                    System.out.println(passwd.getPassword());
+//                    localJDialog.dispose();
+
+            if (school.checkPassword(input)) {
+                resetSetting();
+                click("setting");
+            } else if (!input.equals("")){
+                JOptionPane.showMessageDialog(null, "密碼錯誤", "錯誤錯誤", JOptionPane.ERROR_MESSAGE);
             }
 
         }

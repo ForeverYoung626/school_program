@@ -230,4 +230,14 @@ public class School {
         return "民國"+this.getYear()+"年"+this.getMonth()+"月"+this.getDate()+"日 星期"+this.getDay();
     }
 
+    public boolean IsLeapYear(int year){
+        year += 1911;
+        if (year%400==0)
+            return true;
+        else if (year%4==0 && year%100!=0)
+            return true;
+        return false;
+    }
+
+
 }
